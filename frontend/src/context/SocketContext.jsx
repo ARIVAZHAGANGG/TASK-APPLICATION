@@ -2,6 +2,8 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import { useAuth } from './AuthContext';
 
+import { SOCKET_URL } from '../utils/config';
+
 const SocketContext = createContext();
 
 export const useSocket = () => useContext(SocketContext);
@@ -14,9 +16,7 @@ export const SocketProvider = ({ children }) => {
         let activeSocket = null;
 
         if (user) {
-            const socketUrl = process.env.REACT_APP_API_URL
-                ? process.env.REACT_APP_API_URL.replace('/api', '')
-                : 'http://localhost:5002';
+            const socketUrl = SOCKET_URL || 'http://localhost:5002';
 
             activeSocket = io(socketUrl, {
                 withCredentials: true,

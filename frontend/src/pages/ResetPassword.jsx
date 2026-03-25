@@ -2,9 +2,7 @@ import { useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { Lock, ArrowLeft, Loader2, CheckCircle, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
-import axios from "axios";
-import Button from "../components/ui/Button";
-import Input from "../components/ui/Input";
+import api from "../services/api";
 
 const ResetPassword = () => {
     const { token } = useParams();
@@ -34,7 +32,7 @@ const ResetPassword = () => {
         setLoading(true);
 
         try {
-            await axios.put(`${process.env.REACT_APP_API_URL}/auth/resetpassword/${token}`, { password });
+            await api.put(`/auth/resetpassword/${token}`, { password });
             setSuccess(true);
             toast.success("Password reset successfully!");
             setTimeout(() => {

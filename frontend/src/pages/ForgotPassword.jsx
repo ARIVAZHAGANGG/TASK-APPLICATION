@@ -2,9 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Mail, ArrowLeft, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
-import axios from "axios";
-import Input from "../components/ui/Input";
-import Button from "../components/ui/Button";
+import api from "../services/api";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState("");
@@ -19,7 +17,7 @@ const ForgotPassword = () => {
         setSuccess(false);
 
         try {
-            await axios.post(`${process.env.REACT_APP_API_URL}/auth/forgotpassword`, { email });
+            await api.post('/auth/forgotpassword', { email });
             setSuccess(true);
             toast.success("Reset link sent to your email");
         } catch (err) {
