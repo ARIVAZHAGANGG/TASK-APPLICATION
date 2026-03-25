@@ -1,0 +1,119 @@
+﻿node : (node:18820) 
+[MONGODB DRIVER] Warning: 
+useNewUrlParser is a 
+deprecated option: 
+useNewUrlParser has no 
+effect since Node.js 
+Driver version 4.0.0 and 
+will be removed in the 
+next major version
+At line:1 char:1
++ node loopback.js > 
+loopback_out.txt 2>&1 ; 
+node -e "const 
+fs=require( ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: ((  
+  node:18820) [M...t ma   
+ jor version:String) [    
+], RemoteException
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+(Use `node 
+--trace-warnings ...` to 
+show where the warning 
+was created)
+(node:18820) [MONGODB 
+DRIVER] Warning: 
+useUnifiedTopology is a 
+deprecated option: 
+useUnifiedTopology has no 
+effect since Node.js 
+Driver version 4.0.0 and 
+will be removed in the 
+next major version
+­ƒôè [AI Insights] User: 69b4e230ee5f38bdf39e31bc, Score: 71.43%, Total: 3, Completed: 3
+ÔØî OpenAI Quota 
+Exhausted (429)
+Stats Data: {
+  "totalTasks": 3,
+  "completedTasks": 3,
+  "pendingTasks": 0,
+  "priorityStats": {
+    "high": 1,
+    "medium": 2,
+    "low": 0
+  },
+  "weeklyCreated": [
+    {
+      "date": "2026-03-12",
+      "count": 0
+    },
+    {
+      "date": "2026-03-13",
+      "count": 0
+    },
+    {
+      "date": "2026-03-14",
+      "count": 0
+    },
+    {
+      "date": "2026-03-15",
+      "count": 0
+    },
+    {
+      "date": "2026-03-16",
+      "count": 1
+    },
+    {
+      "date": "2026-03-17",
+      "count": 1
+    },
+    {
+      "date": "2026-03-18",
+      "count": 1
+    }
+  ],
+  "weeklyCompleted": [
+    {
+      "date": "2026-03-12",
+      "count": 0
+    },
+    {
+      "date": "2026-03-13",
+      "count": 0
+    },
+    {
+      "date": "2026-03-14",
+      "count": 0
+    },
+    {
+      "date": "2026-03-15",
+      "count": 0
+    },
+    {
+      "date": "2026-03-16",
+      "count": 1
+    },
+    {
+      "date": "2026-03-17",
+      "count": 0
+    },
+    {
+      "date": "2026-03-18",
+      "count": 2
+    }
+  ],
+  "productivityScore": 71.43,
+  "aiInsights": [
+    {
+      "type": "trend",
+      "message": "Perfect score! You've crushed all your tasks. Time for a break? ­ƒîƒ"
+    }
+  ],
+  "summary": "Focus. Execute. Dominate. You have 0 missions remaining. You've got this!"
+}

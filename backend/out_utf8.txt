@@ -1,0 +1,60 @@
+﻿node : (node:14880) 
+[MONGODB DRIVER] 
+Warning: 
+useNewUrlParser is a 
+deprecated option: 
+useNewUrlParser has 
+no effect since 
+Node.js Driver 
+version 4.0.0 and 
+will be removed in 
+the next major version
+At line:1 char:1
++ node debug.js > 
+out.txt 2>&1 ; type 
+out.txt
++ ~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo    
+          : NotSpeci  
+  fied: ((node:1488   
+ 0) [M...t major v    
+ersion:String) []    
+, RemoteException
+    + FullyQualifiedE 
+   rrorId : NativeCo  
+  mmandError
+ 
+(Use `node 
+--trace-warnings ...` 
+to show where the 
+warning was created)
+(node:14880) [MONGODB 
+DRIVER] Warning: 
+useUnifiedTopology is 
+a deprecated option: 
+useUnifiedTopology 
+has no effect since 
+Node.js Driver 
+version 4.0.0 and 
+will be removed in 
+the next major version
+Found Student: ARIVAZHAGAN G new ObjectId('69ba1e5e5ac60f22ad4b2495')
+Found 1 tasks for this student.
+Raw Tasks:
+[
+  {
+    "_id": "69ba2d748667e153a255a3da",
+    "dueDate": "2026-03-18T00:00:00.000Z",
+    "priority": "medium",
+    "status": "todo",
+    "completed": false,
+    "subtasks": [],
+    "updatedAt": "2026-03-18T04:43:33.003Z"
+  }
+]
+Task Priority: 2, totalPriority now: 2
+Task Completed: false, completionFactor: 0
+Task dueDate: Wed Mar 18 2026 05:30:00 GMT+0530 (India Standard Time), timeFactor: 0.5
+Earned score added: 0, Total Earned: 0
+Final Calculated Score: 0%

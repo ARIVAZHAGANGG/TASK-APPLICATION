@@ -1,0 +1,75 @@
+[
+  {
+    "file": "activity.routes.js",
+    "status": "ok",
+    "error": null
+  },
+  {
+    "file": "admin.routes.js",
+    "status": "ok",
+    "error": null
+  },
+  {
+    "file": "ai.routes.js",
+    "status": "ok",
+    "error": null
+  },
+  {
+    "file": "auth.routes.js",
+    "status": "ok",
+    "error": null
+  },
+  {
+    "file": "billing.routes.js",
+    "status": "ok",
+    "error": null
+  },
+  {
+    "file": "chat.routes.js",
+    "status": "error",
+    "error": {
+      "message": "Router.use() requires a middleware function",
+      "stack": "TypeError: Router.use() requires a middleware function\n    at router.use (G:\\Task App\\backend\\node_modules\\express\\lib\\router\\index.js:462:11)\n    at Object.<anonymous> (G:\\Task App\\backend\\routes\\chat.routes.js:7:8)\n    at Module._compile (node:internal/modules/cjs/loader:1761:14)\n    at Object..js (node:internal/modules/cjs/loader:1893:10)\n    at Module.load (node:internal/modules/cjs/loader:1481:32)\n    at Module._load (node:internal/modules/cjs/loader:1300:12)\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)\n    at Module.require (node:internal/modules/cjs/loader:1504:12)\n    at require (node:internal/modules/helpers:152:16)"
+    }
+  },
+  {
+    "file": "comment.routes.js",
+    "status": "ok",
+    "error": null
+  },
+  {
+    "file": "gamification.routes.js",
+    "status": "ok",
+    "error": null
+  },
+  {
+    "file": "notification.routes.js",
+    "status": "ok",
+    "error": null
+  },
+  {
+    "file": "question.routes.js",
+    "status": "ok",
+    "error": null
+  },
+  {
+    "file": "submission.routes.js",
+    "status": "ok",
+    "error": null
+  },
+  {
+    "file": "support.routes.js",
+    "status": "ok",
+    "error": null
+  },
+  {
+    "file": "task.routes.js",
+    "status": "ok",
+    "error": null
+  },
+  {
+    "file": "workspace.routes.js",
+    "status": "ok",
+    "error": null
+  }
+]

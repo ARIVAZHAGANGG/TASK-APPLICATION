@@ -1,0 +1,38 @@
+[
+  {
+    "_id": "69b4e22fee5f38bdf39e31b3",
+    "name": "System Admin",
+    "email": "admin@taskflow.com",
+    "role": "admin"
+  },
+  {
+    "_id": "69b4e22fee5f38bdf39e31b6",
+    "name": "Mentor One",
+    "email": "mentor1@taskflow.com",
+    "role": "mentor"
+  },
+  {
+    "_id": "69b4e22fee5f38bdf39e31b9",
+    "name": "Mentor Two",
+    "email": "mentor2@taskflow.com",
+    "role": "mentor"
+  },
+  {
+    "_id": "69b4e230ee5f38bdf39e31bc",
+    "name": "Student One",
+    "email": "student1@taskflow.com",
+    "role": "student"
+  },
+  {
+    "_id": "69b4e230ee5f38bdf39e31bf",
+    "name": "Student Two",
+    "email": "student2@taskflow.com",
+    "role": "student"
+  },
+  {
+    "_id": "69b4e230ee5f38bdf39e31c2",
+    "name": "Student Three",
+    "email": "student3@taskflow.com",
+    "role": "student"
+  }
+]

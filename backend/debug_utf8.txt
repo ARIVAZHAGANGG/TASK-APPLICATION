@@ -1,0 +1,87 @@
+﻿node : (node:12800) 
+[MONGODB DRIVER] 
+Warning: 
+useNewUrlParser is a 
+deprecated option: 
+useNewUrlParser has 
+no effect since 
+Node.js Driver 
+version 4.0.0 and 
+will be removed in 
+the next major version
+At line:1 char:1
++ node debug.js > 
+debug_out.txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~
+    + CategoryInfo    
+          : 
+NotSpecified: ((    
+node:12800) [M...t ma 
+   jor 
+version:String) [    
+], RemoteException
+    + 
+FullyQualifiedError   
+ Id : 
+NativeCommandErr    or
+ 
+(Use `node 
+--trace-warnings ...` 
+to show where the 
+warning was created)
+(node:12800) [MONGODB 
+DRIVER] Warning: 
+useUnifiedTopology is 
+a deprecated option: 
+useUnifiedTopology 
+has no effect since 
+Node.js Driver 
+version 4.0.0 and 
+will be removed in 
+the next major version
+Found Student: Student One student1@taskflow.com new ObjectId('69b4e230ee5f38bdf39e31bc')
+Found 3 tasks for this student.
+Raw Tasks:
+[
+  {
+    "_id": "69b90f1d36f6beab19824337",
+    "dueDate": "2026-03-17T00:00:00.000Z",
+    "priority": "medium",
+    "status": "todo",
+    "completed": true,
+    "subtasks": [],
+    "updatedAt": "2026-03-18T05:35:04.282Z"
+  },
+  {
+    "_id": "69ba2da68667e153a255a406",
+    "dueDate": "2026-03-18T00:00:00.000Z",
+    "priority": "medium",
+    "status": "todo",
+    "completed": true,
+    "subtasks": [],
+    "updatedAt": "2026-03-18T04:45:36.372Z"
+  },
+  {
+    "_id": "69b77ccb49c798aa2dc091b1",
+    "dueDate": "2026-03-18T00:00:00.000Z",
+    "priority": "high",
+    "status": "todo",
+    "completed": true,
+    "subtasks": [],
+    "updatedAt": "2026-03-16T05:20:08.092Z"
+  }
+]
+Task Priority: 2, totalPriority now: 2
+Task Completed: true, completionFactor: 1
+Task dueDate: Tue Mar 17 2026 05:30:00 GMT+0530 (India Standard Time), timeFactor: 0.5
+Earned score added: 1, Total Earned: 1
+Task Priority: 2, totalPriority now: 4
+Task Completed: true, completionFactor: 1
+Task dueDate: Wed Mar 18 2026 05:30:00 GMT+0530 (India Standard Time), timeFactor: 0.5
+Earned score added: 1, Total Earned: 2
+Task Priority: 3, totalPriority now: 7
+Task Completed: true, completionFactor: 1
+Task dueDate: Wed Mar 18 2026 05:30:00 GMT+0530 (India Standard Time), timeFactor: 1
+Earned score added: 3, Total Earned: 5
+Final Calculated Score: 71.43%

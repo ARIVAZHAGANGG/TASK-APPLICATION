@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Bit-task</string>
+    <string name="title_activity_main">Bit-task</string>
+    <string name="package_name">com.zentask.app</string>
+    <string name="custom_url_scheme">com.zentask.app</string>
+</resources>
