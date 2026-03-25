@@ -48,6 +48,11 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(compression());
 
+/* Test Route */
+app.get("/", (req, res) => {
+  res.json({ message: "Backend is running!", time: new Date().toISOString() });
+});
+
 /* Routes */
 console.log("Setting up routes...");
 app.use("/api/auth", authRoutes);
