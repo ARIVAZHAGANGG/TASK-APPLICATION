@@ -1,5 +1,11 @@
 const getEnv = (key, defaultValue) => {
-    const value = process.env[key];
+    let value = process.env[key];
+    
+    // Check if value exists and strip accidental 'KEY=' prefix
+    if (value && value.startsWith(`${key}=`)) {
+        value = value.substring(key.length + 1);
+    }
+
     if (!value || value.includes('YOUR_') || value.includes('PLACEHOLDER')) {
         return defaultValue;
     }
