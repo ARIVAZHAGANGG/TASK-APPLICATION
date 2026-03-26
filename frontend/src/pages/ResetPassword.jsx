@@ -3,6 +3,8 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { Lock, ArrowLeft, Loader2, CheckCircle, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import api from "../services/api";
+import Input from "../components/ui/Input";
+import Button from "../components/ui/Button";
 
 const ResetPassword = () => {
     const { token } = useParams();

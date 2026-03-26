@@ -13,7 +13,7 @@ const getEnv = (key, defaultValue) => {
 };
 
 // Clean the API URL
-const rawApiUrl = getEnv('REACT_APP_API_URL', 'http://localhost:5005/api');
+const API = process.env.REACT_APP_API_URL || "https://task-application-isg6.onrender.com";
 
 // Extract the base domain/host for Socket.io (no /api prefix)
 const getBaseUrl = (url) => {
@@ -29,7 +29,7 @@ const getBaseUrl = (url) => {
     }
 };
 
-export const SOCKET_URL = getBaseUrl(rawApiUrl);
+export const SOCKET_URL = getBaseUrl(API);
 export const BASE_API_URL = `${SOCKET_URL}/api`;
 
 export const GOOGLE_CLIENT_ID = getEnv(

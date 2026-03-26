@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { Mail, ArrowLeft, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import api from "../services/api";
+import Input from "../components/ui/Input";
+import Button from "../components/ui/Button";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState("");
