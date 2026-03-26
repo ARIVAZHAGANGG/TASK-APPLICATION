@@ -56,13 +56,13 @@ const AdminDashboard = () => {
                 <div className="flex items-center gap-6 relative z-10 w-full justify-between">
                     <div className="flex items-center gap-6">
                         <div className="flex items-center justify-center p-4 rounded-3xl bg-white/20 backdrop-blur-xl shadow-2xl border border-white/40 transform group-hover:rotate-12 group-hover:scale-110 transition-all duration-700 ease-out">
-                            <span className="text-4xl font-black text-white tracking-tighter drop-shadow-md">BIT</span>
+                            <span className="text-4xl font-black text-white tracking-tighter drop-shadow-md">PANURA</span>
                         </div>
                         <div>
-                            <h1 className="text-4xl font-black text-white tracking-tight uppercase leading-none drop-shadow-lg">Command Center</h1>
+                            <h1 className="text-4xl font-black text-white tracking-tight uppercase leading-none drop-shadow-lg">Control Center</h1>
                             <div className="flex items-center gap-3 mt-3 bg-black/20 w-fit px-4 py-1.5 rounded-full backdrop-blur-md border border-white/20 shadow-inner">
                                 <div className="w-2.5 h-2.5 rounded-full bg-blue-400 animate-pulse shadow-[0_0_12px_rgba(96,165,250,0.9)]"></div>
-                                <p className="text-[11px] font-black text-white uppercase tracking-[0.2em]">Institutional Intelligence</p>
+                                <p className="text-[11px] font-black text-white uppercase tracking-[0.2em]">System Intelligence Hub</p>
                             </div>
                         </div>
                     </div>

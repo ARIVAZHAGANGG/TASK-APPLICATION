@@ -34,6 +34,31 @@ const Messages = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
+    const [allUsers, setAllUsers] = useState([]);
+    const [isLoadingUsers, setIsLoadingUsers] = useState(false);
+
+    useEffect(() => {
+        const fetchInitialUsers = async () => {
+            try {
+                setIsLoadingUsers(true);
+                // Fetch mentors and students for the registry list
+                const [mentorsRes, studentsRes] = await Promise.all([
+                    api.get("/admin/staff?role=mentor"),
+                    api.get("/admin/students")
+                ]);
+                const combined = [
+                    ...(mentorsRes.data || []),
+                    ...(studentsRes.data || [])
+                ].filter(u => u.id !== user.id && u._id !== user.id);
+                setAllUsers(combined);
+            } catch (err) {
+                console.error("Failed to fetch registry:", err);
+            } finally {
+                setIsLoadingUsers(false);
+            }
+        };
+        fetchInitialUsers();
+    }, [user.id]);
 
     useEffect(() => {
         const fetchSearchResults = async () => {
@@ -120,13 +145,30 @@ const Messages = () => {
                             <Loader2 className="animate-spin mb-2 text-primary-500" size={24} />
                             <span className="text-[10px] font-black uppercase tracking-widest">Scanning Waves...</span>
                         </div>
-                    ) : filteredConversations.length === 0 && searchResults.length === 0 && !isSearching && searchTerm.length < 2 ? (
-                        <div className="flex flex-col items-center justify-center h-full text-center p-6 opacity-40">
-                            <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-3xl flex items-center justify-center mb-4">
-                                <Users size={32} />
-                            </div>
-                            <p className="text-[10px] font-black uppercase tracking-widest">No Active Links</p>
-                            <p className="text-[10px] lowercase mt-1 text-slate-400">Search the registry above to start a chat</p>
+                    ) : (filteredConversations.length === 0 && searchResults.length === 0 && !isSearching && searchTerm.length < 2) ? (
+                        <div className="space-y-4">
+                            <h3 className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400">Personnel Registry</h3>
+                            {isLoadingUsers ? (
+                                <div className="flex justify-center p-8"><Loader2 className="animate-spin text-primary-500" size={20} /></div>
+                            ) : (
+                                allUsers.map((u) => (
+                                    <button
+                                        key={u._id || u.id}
+                                        onClick={() => setSelectedChat({ id: u._id || u.id, name: u.name })}
+                                        className="w-full flex items-center gap-4 p-4 rounded-[1.5rem] transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50 text-slate-600 dark:text-slate-400 group"
+                                    >
+                                        <div className="relative shrink-0">
+                                            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-400 group-hover:border-primary-500/30">
+                                                {u.avatar ? <img src={u.avatar} className="w-full h-full object-cover rounded-2xl" /> : <User size={20} />}
+                                            </div>
+                                        </div>
+                                        <div className="flex-1 text-left min-w-0">
+                                            <h4 className="text-xs font-black uppercase tracking-tight truncate text-slate-900 dark:text-white">{u.name}</h4>
+                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-0.5">{u.role || 'Personnel'}</p>
+                                        </div>
+                                    </button>
+                                ))
+                            )}
                         </div>
                     ) : (
                         <div className="space-y-1">

@@ -3,9 +3,14 @@ const Task = require("../models/Task");
 
 exports.getStaffMembers = async (req, res) => {
   try {
-    const staff = await User.find({ role: { $in: ["mentor", "admin"] } })
-      .select("name email role staffId createdAt")
-      .sort({ createdAt: -1 });
+    const { role } = req.query;
+    const filter = role ? { role } : { role: { $in: ["mentor", "admin"] } };
+    
+    const staff = await User.find(filter)
+      .select("name email role staffId createdAt avatar")
+      .sort({ createdAt: -1 })
+      .lean();
+      
     res.json(staff);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -14,65 +19,134 @@ exports.getStaffMembers = async (req, res) => {
 
 exports.getStudents = async (req, res) => {
   try {
-    const students = await User.find({ role: "student" })
-      .select("name email avatar createdAt department batch manualProductivityOverride productivityLastUpdatedBy productivityLastUpdatedAt")
-      .sort({ name: 1 })
-      .lean();
-
-    const studentsWithScores = await Promise.all(students.map(async (student) => {
-      const tasks = await Task.find({ 
-        $or: [{ assignedToUserId: student._id }, { assignedTo: student._id }] 
-      }).select('priority completed subtasks dueDate completedAt updatedAt').lean();
-      
-      let earnedScore = 0;
-      let totalPriority = 0;
-      const priorityWeights = { low: 1, medium: 2, high: 3, critical: 4 };
-
-      tasks.forEach(task => {
-          const priority = priorityWeights[task.priority] || 2;
-          totalPriority += priority;
-
-          let completionFactor = 0;
-          if (task.completed) {
-              completionFactor = 1;
-          } else if (task.subtasks && task.subtasks.length > 0) {
-              const completedSubtasks = task.subtasks.filter(st => st.completed).length;
-              if (completedSubtasks > 0) {
-                  completionFactor = 0.5;
+    // 🚀 Performance Optimization: Using Aggregation Pipeline to calculate scores in bulk
+    // This avoids the N+1 query problem where we queried tasks for EACH student.
+    const studentsWithScores = await User.aggregate([
+      { $match: { role: "student" } },
+      {
+        $lookup: {
+          from: "tasks",
+          let: { studentId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $or: [
+                    { $eq: ["$assignedToUserId", "$$studentId"] },
+                    { $eq: ["$assignedTo", "$$studentId"] }
+                  ]
+                }
               }
-          }
-
-          let timeFactor = 1;
-          if (task.dueDate) {
-              const checkDate = new Date(task.completed ? (task.completedAt || task.updatedAt) : new Date());
-              const dueDate = new Date(task.dueDate);
-              
-              if (checkDate > dueDate) {
-                  const diffTime = checkDate.getTime() - dueDate.getTime();
-                  const diffDays = diffTime / (1000 * 60 * 60 * 24);
-                  
-                  if (diffDays > 3) {
-                      timeFactor = 0.2; // Very Late
-                  } else {
-                      timeFactor = 0.5; // Late
+            },
+            {
+              $project: {
+                priority: 1,
+                completed: 1,
+                subtasks: 1,
+                dueDate: 1,
+                completedAt: 1,
+                updatedAt: 1
+              }
+            }
+          ],
+          as: "tasks"
+        }
+      },
+      {
+        $addFields: {
+          id: { $toString: "$_id" },
+          scores: {
+            $reduce: {
+              input: "$tasks",
+              initialValue: { earnedScore: 0, totalPriority: 0 },
+              in: {
+                $let: {
+                  vars: {
+                    priorityWeight: {
+                      $switch: {
+                        branches: [
+                          { case: { $eq: ["$$this.priority", "low"] }, then: 1 },
+                          { case: { $eq: ["$$this.priority", "medium"] }, then: 2 },
+                          { case: { $eq: ["$$this.priority", "high"] }, then: 3 },
+                          { case: { $eq: ["$$this.priority", "critical"] }, then: 4 }
+                        ],
+                        default: 2
+                      }
+                    },
+                    completionFactor: {
+                      $cond: [
+                        "$$this.completed",
+                        1,
+                        {
+                          $cond: [
+                            { $gt: [{ $size: { $ifNull: ["$$this.subtasks", []] } }, 0] },
+                            {
+                              $cond: [
+                                { $gt: [{ $size: { $filter: { input: { $ifNull: ["$$this.subtasks", []] }, as: "st", cond: "$$st.completed" } } }, 0] },
+                                0.5,
+                                0
+                              ]
+                            },
+                            0
+                          ]
+                        }
+                      ]
+                    },
+                    // Simplified Time Factor for Aggregation
+                    timeFactor: {
+                       $cond: [
+                         { $not: ["$$this.dueDate"] },
+                         1,
+                         {
+                           $let: {
+                             vars: {
+                               checkDate: { $ifNull: ["$$this.completedAt", "$$this.updatedAt"] },
+                               dueDate: "$$this.dueDate"
+                             },
+                             in: {
+                               $cond: [
+                                 { $gt: ["$$checkDate", "$$dueDate"] },
+                                 0.5,
+                                 1
+                               ]
+                             }
+                           }
+                         }
+                       ]
+                    }
+                  },
+                  in: {
+                    earnedScore: { $add: ["$$value.earnedScore", { $multiply: ["$$priorityWeight", "$$completionFactor", "$$timeFactor"] }] },
+                    totalPriority: { $add: ["$$value.totalPriority", "$$priorityWeight"] }
                   }
+                }
               }
+            }
           }
+        }
+      },
+      {
+        $addFields: {
+          calculatedProductivityScore: {
+            $cond: [
+              { $eq: ["$scores.totalPriority", 0] },
+              0,
+              { $round: [{ $multiply: [{ $divide: ["$scores.earnedScore", "$scores.totalPriority"] }, 100] }, 2] }
+            ]
+          }
+        }
+      },
+      {
+        $project: {
+          password: 0,
+          tasks: 0,
+          scores: 0
+        }
+      },
+      { $sort: { name: 1 } }
+    ]);
 
-          const taskScore = priority * completionFactor * timeFactor;
-          earnedScore += taskScore;
-      });
-
-      const calculatedScore = totalPriority === 0 ? 0 : Number(((earnedScore / totalPriority) * 100).toFixed(2));
-
-      return {
-        ...student,
-        calculatedProductivityScore: calculatedScore,
-        productivityScore: calculatedScore // ALWAYS dynamic, no manual overrides per new objective
-      };
-    }));
-
-    res.json(studentsWithScores);
+    res.json(studentsWithScores.map(s => ({ ...s, productivityScore: s.calculatedProductivityScore })));
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
