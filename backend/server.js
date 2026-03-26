@@ -37,6 +37,7 @@ connectDB().then(() => {
 app.use(cors({
   origin: [
     process.env.FRONTEND_URL || 'http://localhost:3000',
+    'https://bit-task.netlify.app',
     'http://localhost:3000',
     'http://localhost:3001',
     'http://127.0.0.1:3000',
