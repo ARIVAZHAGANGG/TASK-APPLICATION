@@ -56,7 +56,7 @@ const AdminDashboard = () => {
                 <div className="flex items-center gap-6 relative z-10 w-full justify-between">
                     <div className="flex items-center gap-6">
                         <div className="flex items-center justify-center p-4 rounded-3xl bg-white/20 backdrop-blur-xl shadow-2xl border border-white/40 transform group-hover:rotate-12 group-hover:scale-110 transition-all duration-700 ease-out">
-                            <span className="text-4xl font-black text-white tracking-tighter drop-shadow-md">PANURA</span>
+                            <span className="text-4xl font-black text-white tracking-tighter drop-shadow-md">BIT</span>
                         </div>
                         <div>
                             <h1 className="text-4xl font-black text-white tracking-tight uppercase leading-none drop-shadow-lg">Control Center</h1>
