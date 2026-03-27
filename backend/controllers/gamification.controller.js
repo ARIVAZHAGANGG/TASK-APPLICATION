@@ -154,8 +154,18 @@ exports.downloadReport = async (req, res) => {
         const user = await User.findById(req.user.id);
         if (!user) return res.status(404).json({ message: 'User not found' });
 
-        const { calculateActivityProductivityScore } = require('./task.controller');
-        const role = user.role.toUpperCase();
+        // Import the score function at the top of the handler to ensure it's available
+        let calculateActivityProductivityScore = (tasks) => 0;
+        try {
+            const taskCtrl = require('./task.controller');
+            if (taskCtrl && taskCtrl.calculateActivityProductivityScore) {
+                calculateActivityProductivityScore = taskCtrl.calculateActivityProductivityScore;
+            }
+        } catch (e) {
+            console.error("Failed to load calculateActivityProductivityScore from task.controller:", e);
+        }
+
+        const role = (user.role || 'student').toUpperCase();
 
         // ─── DATA GATHERING ─────────────────────────────────────────────────────
         let kpiCards    = [];
@@ -163,8 +173,11 @@ exports.downloadReport = async (req, res) => {
         let tableRows   = [];
         let recentTasks = [];
 
+        // Apply a safe limit to prevent memory/timeout issues on large accounts
+        const MAX_TASKS = 200; 
+
         if (user.role === 'admin') {
-            const allTasks   = await Task.find({}).populate('assignedByUserId','name').populate('assignedToUserId','name').lean();
+            const allTasks   = await Task.find({}).populate('assignedByUserId','name').populate('assignedToUserId','name').limit(MAX_TASKS).lean();
             const totalUsers = await User.countDocuments({ role: { $in: ['student','mentor'] } });
             const completed  = allTasks.filter(t => t.completed).length;
             const pending    = allTasks.length - completed;
@@ -173,6 +186,7 @@ exports.downloadReport = async (req, res) => {
                 if (!t.dueDate) return true;
                 return new Date(t.completedAt || t.updatedAt) <= new Date(t.dueDate);
             }).length;
+            
             const prod       = calculateActivityProductivityScore(allTasks);
             const compRate   = allTasks.length > 0 ? Math.round((completed/allTasks.length)*100) : 0;
             const onTimeRate = completed > 0 ? Math.round((onTime/completed)*100) : 0;
@@ -198,10 +212,10 @@ exports.downloadReport = async (req, res) => {
                 ['System Efficiency',      '85%',                    prod + '%',               (prod>0?Math.round((prod/85)*100):0) + '%'],
                 ['Active Users',           '-',                      String(totalUsers),        '-'],
             ];
-            recentTasks = allTasks.sort((a,b) => new Date(b.updatedAt)-new Date(a.updatedAt)).slice(0,6);
+            recentTasks = [...allTasks].sort((a,b) => new Date(b.updatedAt)-new Date(a.updatedAt)).slice(0,6);
 
         } else if (user.role === 'mentor') {
-            const assigned      = await Task.find({ assignedByUserId: user._id }).populate('assignedToUserId','name').lean();
+            const assigned      = await Task.find({ assignedByUserId: user._id }).populate('assignedToUserId','name').limit(MAX_TASKS).lean();
             const studentsCount = await User.countDocuments({ role: 'student' });
             const completed     = assigned.filter(t => t.completed).length;
             const pending       = assigned.length - completed;
@@ -210,6 +224,7 @@ exports.downloadReport = async (req, res) => {
                 if (!t.dueDate) return true;
                 return new Date(t.completedAt || t.updatedAt) <= new Date(t.dueDate);
             }).length;
+            
             const prod       = calculateActivityProductivityScore(assigned);
             const compRate   = assigned.length > 0 ? Math.round((completed/assigned.length)*100) : 0;
             const onTimeRate = completed > 0 ? Math.round((onTime/completed)*100) : 0;
@@ -235,7 +250,7 @@ exports.downloadReport = async (req, res) => {
                 ['Pending Tasks',        '0',                      String(pending),           '-'],
                 ['Mentorship Quality',   '85%',                    prod + '%',                (prod>0?Math.round((prod/85)*100):0) + '%'],
             ];
-            recentTasks = assigned.sort((a,b) => new Date(b.updatedAt)-new Date(a.updatedAt)).slice(0,6);
+            recentTasks = [...assigned].sort((a,b) => new Date(b.updatedAt)-new Date(a.updatedAt)).slice(0,6);
 
         } else {
             // Student
@@ -247,7 +262,7 @@ exports.downloadReport = async (req, res) => {
                     { createdBy: user._id, assignedToUserId: null },
                 ]
             };
-            const tasks      = await Task.find(sQuery).populate('assignedByUserId','name').lean();
+            const tasks      = await Task.find(sQuery).populate('assignedByUserId','name').limit(MAX_TASKS).lean();
             const completed  = tasks.filter(t => t.completed).length;
             const pending    = tasks.length - completed;
             const highPri    = tasks.filter(t => t.completed && (t.priority==='high'||t.priority==='critical')).length;
@@ -256,6 +271,7 @@ exports.downloadReport = async (req, res) => {
                 if (!t.dueDate) return true;
                 return new Date(t.completedAt || t.updatedAt) <= new Date(t.dueDate);
             }).length;
+            
             const prod       = calculateActivityProductivityScore(tasks);
             const compRate   = tasks.length > 0 ? Math.round((completed/tasks.length)*100) : 0;
             const onTimeRate = completed > 0 ? Math.round((onTime/completed)*100) : 0;
@@ -282,7 +298,7 @@ exports.downloadReport = async (req, res) => {
                 ['On-Time Completion',   String(completed),    String(onTime),       onTimeRate + '%'],
                 ['Performance Rating',   '80%',                prod + '%',           (prod>0?Math.round((prod/80)*100):0) + '%'],
             ];
-            recentTasks = tasks.sort((a,b) => new Date(b.updatedAt)-new Date(a.updatedAt)).slice(0,6);
+            recentTasks = [...tasks].sort((a,b) => new Date(b.updatedAt)-new Date(a.updatedAt)).slice(0,6);
         }
 
         // ─── BUILD PDF ──────────────────────────────────────────────────────────
@@ -317,8 +333,12 @@ exports.downloadReport = async (req, res) => {
         // ═══════════════════════════════════════════════════════════════════
         const logoPath = path.join(__dirname, '../assets/bait_logo.png');
         if (fs.existsSync(logoPath)) {
-            doc.image(logoPath, (W/2) - 30, doc.y, { width: 60, height: 60 });
-            doc.moveDown(5);
+            try {
+                doc.image(logoPath, (W/2) - 30, doc.y, { width: 60, height: 60 });
+                doc.moveDown(5);
+            } catch (err) {
+                console.warn("Logo drawing failed, skipping:", err.message);
+            }
         }
 
         doc.fillColor('#0f172a').fontSize(17).font('Helvetica-Bold')
@@ -479,8 +499,8 @@ exports.downloadReport = async (req, res) => {
 
                 var cells = [
                     { t: (task.title||'Untitled').slice(0,34), c:'#0f172a', f:'Helvetica-Bold' },
-                    { t: by.slice(0,18),  c:'#475569', f:'Helvetica' },
-                    { t: to.slice(0,18),  c:'#475569', f:'Helvetica' },
+                    { t: (by || 'N/A').slice(0,18),  c:'#475569', f:'Helvetica' },
+                    { t: (to || 'N/A').slice(0,18),  c:'#475569', f:'Helvetica' },
                     { t: aDStr,           c:'#64748b', f:'Helvetica' },
                     { t: cDStr,           c:'#64748b', f:'Helvetica' },
                     { t: status,          c: statusClr, f:'Helvetica-Bold' },
@@ -488,7 +508,7 @@ exports.downloadReport = async (req, res) => {
 
                 cells.forEach(function(d,i) {
                     doc.fillColor(d.c).font(d.f).fontSize(8)
-                       .text(d.t, tcX[i]+3, rowY+2, { width: tcW[i]-6 });
+                       .text(String(d.t), tcX[i]+3, rowY+2, { width: tcW[i]-6 });
                 });
                 doc.moveDown(1.1);
             });
@@ -515,7 +535,7 @@ exports.downloadReport = async (req, res) => {
     } catch (error) {
         console.error('PDF Generation Error:', error);
         if (!res.headersSent) {
-            res.status(500).json({ message: 'Failed to generate report' });
+            res.status(500).json({ message: 'Failed to generate report', details: error.message });
         }
     }
 };
