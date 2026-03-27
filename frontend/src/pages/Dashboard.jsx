@@ -51,6 +51,11 @@ const Dashboard = () => {
     }, [user.id]);
 
     useEffect(() => {
+        const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+        return () => clearInterval(timer);
+    }, []);
+
+    useEffect(() => {
         fetchDashboardData();
     }, [fetchDashboardData]);
 
