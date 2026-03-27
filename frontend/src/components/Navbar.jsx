@@ -18,7 +18,26 @@ const getPageTitle = (pathname) => {
     if (pathname === "/completed") return "Completed";
     if (pathname === "/board") return "Task List";
     if (pathname === "/system-tasks") return "Task Oversight";
+    if (pathname.startsWith("/mentors/")) return "Mentor Profile";
+    if (pathname.startsWith("/students/")) return "Student Profile";
+    if (pathname === "/mentors") return "Mentor Registry";
+    if (pathname === "/students") return "Student Registry";
+    if (pathname === "/users") return "User Management";
+    if (pathname === "/assign-task") return "Assign Task";
+    if (pathname === "/assigned-tasks") return "Assigned Tasks";
+    if (pathname === "/activity-log") return "Activity Log";
+    if (pathname === "/manage-qa") return "Manage Q&A";
+    if (pathname === "/report") return "Report";
+    if (pathname === "/analytics") return "Analytics";
+    if (pathname === "/settings") return "Settings";
+    if (pathname === "/messages") return "Messages";
+    if (pathname === "/notifications") return "Notifications";
+    if (pathname === "/help") return "Help Center";
+    if (pathname === "/my-tasks") return "My Tasks";
+    if (pathname === "/calendar") return "Calendar";
     const segment = pathname.split("/").pop();
+    // Don't show MongoDB IDs (24-char hex strings) as titles
+    if (segment && /^[a-f0-9]{24}$/i.test(segment)) return "Profile";
     return segment ? segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, " ") : "Dashboard";
 };
 
