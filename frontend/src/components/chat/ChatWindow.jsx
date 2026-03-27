@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, User, MessageSquare, Loader2, AlertCircle, Bot, X } from 'lucide-react';
+import { Send, User, MessageSquare, Loader2, AlertCircle, Bot, X, Trash2 } from 'lucide-react';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { useSocket } from '../../context/SocketContext';
@@ -34,14 +34,21 @@ const ChatWindow = ({ recipientId, recipientName, onClose }) => {
                 ) {
                     setMessages(prev => {
                         // Avoid duplicates
-                        if (prev.find(m => m.id === message.id || m._id === message._id)) return prev;
+                        const msgId = message.id || message._id;
+                        if (prev.find(m => (m.id || m._id) === msgId)) return prev;
                         return [...prev, message];
                     });
                 }
             });
 
+            // Listen for deleted messages
+            socket.on('message_deleted', ({ messageId }) => {
+                setMessages(prev => prev.filter(m => (m.id || m._id) !== messageId));
+            });
+
             return () => {
                 socket.off('private_message');
+                socket.off('message_deleted');
             };
         }
     }, [recipientId, socket, user?.id]);
@@ -84,7 +91,8 @@ const ChatWindow = ({ recipientId, recipientName, onClose }) => {
             // Socket will handle adding the message to state for both sides
             // But we add it here for instant feedback if socket is slow
             setMessages(prev => {
-                if (prev.find(m => m.id === res.data.message.id || m._id === res.data.message._id)) return prev;
+                const msgId = res.data.message.id || res.data.message._id;
+                if (prev.find(m => (m.id || m._id) === msgId)) return prev;
                 return [...prev, res.data.message];
             });
             setNewMessage('');
@@ -92,6 +100,18 @@ const ChatWindow = ({ recipientId, recipientName, onClose }) => {
             toast.error('Failed to send message');
         } finally {
             setSending(false);
+        }
+    };
+
+    const handleDeleteMessage = async (messageId) => {
+        if (!window.confirm("Delete this message?")) return;
+
+        try {
+            await api.delete(`/chat/${messageId}`);
+            setMessages(prev => prev.filter(m => (m.id || m._id) !== messageId));
+            toast.success("Message deleted");
+        } catch (error) {
+            toast.error("Failed to delete message");
         }
     };
 
@@ -146,26 +166,47 @@ const ChatWindow = ({ recipientId, recipientName, onClose }) => {
                 ) : (
                     messages.map((msg, index) => {
                         const isMe = msg.senderId === user?.id || (msg.senderId?._id === user?.id) || (msg.senderId?.id === user?.id);
+                        const canDelete = isMe || user?.role === 'admin';
+                        const msgId = msg.id || msg._id;
+
                         return (
                             <div 
-                                key={msg.id || msg._id || index}
+                                key={msgId || index}
                                 className={cn(
-                                    "flex flex-col gap-1.5 max-w-[80%]",
+                                    "flex flex-col gap-1.5 max-w-[80%] group",
                                     isMe ? "ml-auto items-end" : "mr-auto items-start"
                                 )}
                             >
-                                <div className={cn(
-                                    "px-4 py-3 rounded-[1.5rem] text-sm font-medium leading-relaxed shadow-sm transition-all",
-                                    isMe 
-                                        ? cn(
-                                            "text-white rounded-tr-none",
-                                            user?.role === 'admin' ? "bg-gradient-to-br from-rose-500 to-pink-600 shadow-rose-500/20" :
-                                            user?.role === 'mentor' ? "bg-gradient-to-br from-indigo-500 to-purple-600 shadow-indigo-500/20" :
-                                            "bg-gradient-to-br from-blue-600 to-blue-500 shadow-blue-500/20"
-                                          )
-                                        : "bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-tl-none border border-slate-100 dark:border-slate-700"
-                                )}>
-                                    {msg.content}
+                                <div className="flex items-center gap-2 max-w-full">
+                                    {isMe && canDelete && (
+                                        <button 
+                                            onClick={() => handleDeleteMessage(msgId)}
+                                            className="opacity-0 group-hover:opacity-100 p-1.5 text-slate-300 hover:text-rose-500 transition-all"
+                                        >
+                                            <Trash2 size={14} />
+                                        </button>
+                                    )}
+                                    <div className={cn(
+                                        "px-4 py-3 rounded-[1.5rem] text-sm font-medium leading-relaxed shadow-sm transition-all",
+                                        isMe 
+                                            ? cn(
+                                                "text-white rounded-tr-none",
+                                                user?.role === 'admin' ? "bg-gradient-to-br from-rose-500 to-pink-600 shadow-rose-500/20" :
+                                                user?.role === 'mentor' ? "bg-gradient-to-br from-indigo-500 to-purple-600 shadow-indigo-500/20" :
+                                                "bg-gradient-to-br from-blue-600 to-blue-500 shadow-blue-500/20"
+                                              )
+                                            : "bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-tl-none border border-slate-100 dark:border-slate-700"
+                                    )}>
+                                        {msg.content}
+                                    </div>
+                                    {!isMe && canDelete && (
+                                        <button 
+                                            onClick={() => handleDeleteMessage(msgId)}
+                                            className="opacity-0 group-hover:opacity-100 p-1.5 text-slate-300 hover:text-rose-500 transition-all"
+                                        >
+                                            <Trash2 size={14} />
+                                        </button>
+                                    )}
                                 </div>
                                 <span className="text-[9px] font-bold text-slate-300 px-1">
                                     {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -204,3 +245,4 @@ const ChatWindow = ({ recipientId, recipientName, onClose }) => {
 };
 
 export default ChatWindow;
+

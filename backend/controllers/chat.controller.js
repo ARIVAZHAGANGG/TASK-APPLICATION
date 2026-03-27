@@ -178,3 +178,43 @@ exports.searchUsers = async (req, res) => {
         res.status(500).json({ success: false, message: 'Failed to search users' });
     }
 };
+/**
+ * Delete a specific chat message
+ */
+exports.deleteMessage = async (req, res) => {
+    try {
+        const { messageId } = req.params;
+        const currentUserId = req.user.id;
+
+        const message = await ChatMessage.findById(messageId);
+
+        if (!message) {
+            return res.status(404).json({ success: false, message: 'Message not found' });
+        }
+
+        // Only sender or admin can delete
+        if (message.senderId.toString() !== currentUserId && req.user.role !== 'admin') {
+            return res.status(403).json({ success: false, message: 'Unauthorized to delete this message' });
+        }
+
+        const receiverId = message.receiverId.toString();
+        const senderId = message.senderId.toString();
+
+        await ChatMessage.findByIdAndDelete(messageId);
+
+        // Notify both parties via socket
+        const io = req.app.get('io');
+        if (io) {
+            io.to(senderId).emit('message_deleted', { messageId });
+            io.to(receiverId).emit('message_deleted', { messageId });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Message deleted successfully'
+        });
+    } catch (error) {
+        console.error('Delete Message Error:', error);
+        res.status(500).json({ success: false, message: 'Failed to delete message' });
+    }
+};

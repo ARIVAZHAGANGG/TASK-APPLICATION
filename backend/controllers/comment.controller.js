@@ -58,6 +58,14 @@ exports.addComment = async (req, res) => {
             targets.add(task.assignedByUserId.toString());
         }
 
+        // --- NEW: Notify student's personal mentor ---
+        if (assigneeId) {
+            const student = await User.findById(assigneeId);
+            if (student && student.mentorId && student.mentorId.toString() !== req.user.id) {
+                targets.add(student.mentorId.toString());
+            }
+        }
+
         // Special logic: If a student is commenting, notify all admins
         if (req.user.role === 'student') {
             const admins = await User.find({ role: 'admin' }, '_id');

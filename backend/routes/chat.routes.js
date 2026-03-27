@@ -22,4 +22,7 @@ router.post('/assign-mentor', roleMiddleware('admin', 'mentor'), chatController.
 // Search users to start a new chat
 router.get('/users/search', chatController.searchUsers);
 
+// Delete a message
+router.delete('/:messageId', chatController.deleteMessage);
+
 module.exports = router;
