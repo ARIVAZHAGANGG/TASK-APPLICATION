@@ -25,8 +25,9 @@ const Login = () => {
 
     const moveButton = () => {
         if (email && !password) {
-            const randomX = (Math.random() - 0.5) * 300; 
-            const randomY = (Math.random() - 0.5) * 200; 
+            const isMobile = window.innerWidth < 768;
+            const randomX = (Math.random() - 0.5) * (isMobile ? 150 : 300); 
+            const randomY = (Math.random() - 0.5) * (isMobile ? 100 : 200); 
             setBtnOffset({ x: randomX, y: randomY });
             
             setIsShaking(true);
@@ -100,7 +101,7 @@ const Login = () => {
     return (
         <div className="min-h-screen w-full flex flex-col md:flex-row font-['Nunito'] overflow-hidden bg-white">
             {/* Left Side: Illustration */}
-            <div className="w-full md:w-1/2 bg-[#b5e5e0] flex items-center justify-center p-8 md:p-12 relative">
+            <div className="w-full md:w-1/2 bg-[#b5e5e0] flex items-center justify-center p-4 sm:p-8 md:p-12 relative min-h-[250px] md:min-h-0">
                 <motion.div 
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -110,23 +111,23 @@ const Login = () => {
                     <img 
                         src={loginIllustration} 
                         alt="Welcome Illustration" 
-                        className="w-full h-auto max-w-[600px] object-contain"
+                        className="w-[70%] md:w-full h-auto max-w-[500px] object-contain"
                     />
                 </motion.div>
             </div>
 
             {/* Right Side: Form */}
-            <div className="w-full md:w-1/2 p-8 md:p-16 flex flex-col justify-center bg-white relative">
+            <div className="w-full md:w-1/2 p-6 sm:p-8 md:p-16 flex flex-col justify-center bg-white relative">
                 <motion.div 
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
                     className="max-w-[460px] mx-auto w-full"
                 >
-                        <div className="mb-10 text-center md:text-left">
-                            <h1 className="text-4xl font-bold text-slate-800 mb-4">Welcome Back :)</h1>
-                            <p className="text-slate-500 text-sm leading-relaxed">
-                                To keep connected with us please login with your personal information by email address and password 🔔
+                        <div className="mb-6 sm:mb-10 text-center md:text-left">
+                            <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2 sm:mb-4 tracking-tight">Welcome Back :)</h1>
+                            <p className="text-slate-500 text-[13px] sm:text-sm leading-relaxed">
+                                To keep connected with us please login with your personal information 🔔
                             </p>
                         </div>
 
@@ -164,11 +165,11 @@ const Login = () => {
                             )}
                         </AnimatePresence>
 
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                            <div className="space-y-4">
+                        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+                            <div className="space-y-3 sm:space-y-4">
                                 <div className="relative group">
                                     <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors">
-                                        <Mail size={20} />
+                                        <Mail size={18} className="sm:size-5" />
                                     </div>
                                     <input
                                         type="email"
@@ -178,7 +179,7 @@ const Login = () => {
                                             if (emailError) setEmailError(false);
                                             if (notRegisteredError) setNotRegisteredError(false);
                                         }}
-                                        className="w-full h-[60px] pl-12 pr-4 bg-slate-50 border border-transparent rounded-[20px] text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-blue-100 focus:ring-4 focus:ring-blue-500/5 transition-all outline-none text-sm font-medium"
+                                        className="w-full h-14 sm:h-[60px] pl-12 pr-4 bg-slate-50 border border-transparent rounded-2xl sm:rounded-[20px] text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-blue-100 focus:ring-4 focus:ring-blue-500/5 transition-all outline-none text-sm font-medium"
                                         placeholder="Email Address"
                                     />
                                     {email && (
@@ -192,13 +193,13 @@ const Login = () => {
 
                                 <div className="relative group">
                                     <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors">
-                                        <Lock size={20} />
+                                        <Lock size={18} className="sm:size-5" />
                                     </div>
                                     <input
                                         type={showPassword ? "text" : "password"}
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
-                                        className="w-full h-[60px] pl-12 pr-12 bg-slate-50 border border-transparent rounded-[20px] text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-blue-100 focus:ring-4 focus:ring-blue-500/5 transition-all outline-none text-sm font-medium"
+                                        className="w-full h-14 sm:h-[60px] pl-12 pr-12 bg-slate-50 border border-transparent rounded-2xl sm:rounded-[20px] text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-blue-100 focus:ring-4 focus:ring-blue-500/5 transition-all outline-none text-sm font-medium"
                                         placeholder="Password"
                                     />
                                     <button 
@@ -211,7 +212,7 @@ const Login = () => {
                                 </div>
                             </div>
 
-                            <div className="flex items-center justify-between text-xs font-bold px-1">
+                            <div className="flex items-center justify-between text-[11px] sm:text-xs font-bold px-1">
                                 <label className="flex items-center gap-2 cursor-pointer group text-slate-500 hover:text-slate-800 transition-colors">
                                     <div className="relative">
                                         <input
@@ -220,8 +221,8 @@ const Login = () => {
                                             onChange={(e) => setRememberMe(e.target.checked)}
                                             className="peer sr-only"
                                         />
-                                        <div className="w-5 h-5 border-2 border-slate-200 rounded-lg peer-checked:bg-green-500 peer-checked:border-green-500 transition-all flex items-center justify-center">
-                                            <svg className="w-3 h-3 text-white opacity-0 peer-checked:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
+                                        <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-slate-200 rounded-md sm:rounded-lg peer-checked:bg-green-500 peer-checked:border-green-500 transition-all flex items-center justify-center">
+                                            <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white opacity-0 peer-checked:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
                                                 <path d="M5 13l4 4L19 7" />
                                             </svg>
                                         </div>
@@ -233,7 +234,7 @@ const Login = () => {
                                 </Link>
                             </div>
 
-                            <div className="relative pt-2">
+                            <div className="relative pt-1 sm:pt-2">
                                     <div className="relative w-full">
                                         <motion.button
                                             ref={btnRef}
@@ -252,7 +253,7 @@ const Login = () => {
                                                 damping: 15,
                                                 rotate: { duration: 0.4 }
                                             }}
-                                            className="w-full h-[54px] bg-blue-500 hover:bg-blue-600 text-white rounded-[20px] font-bold text-sm shadow-lg shadow-blue-500/20 active:scale-[0.98] transition-colors flex items-center justify-center gap-2 group whitespace-nowrap"
+                                            className="w-full h-[50px] sm:h-[54px] bg-blue-500 hover:bg-blue-600 text-white rounded-xl sm:rounded-[20px] font-bold text-sm shadow-lg shadow-blue-500/20 active:scale-[0.98] transition-colors flex items-center justify-center gap-2 group whitespace-nowrap"
                                         >
                                             {isLoading ? (
                                                 <Loader2 className="h-5 w-5 animate-spin" />
@@ -278,15 +279,15 @@ const Login = () => {
                                     </div>
                             </div>
 
-                            <div className="relative flex items-center justify-center my-6">
+                            <div className="relative flex items-center justify-center my-5 sm:my-6">
                                 <div className="w-full h-px bg-slate-100" />
-                                <span className="absolute px-4 bg-white text-[10px] font-black uppercase tracking-widest text-slate-400">Or continue with</span>
+                                <span className="absolute px-4 bg-white text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-slate-400">Or continue with</span>
                             </div>
 
                             <button
                                 type="button"
                                 onClick={() => handleGoogleLogin()}
-                                className="w-full h-[54px] bg-white border-2 border-slate-100 hover:border-blue-100 hover:bg-blue-50/30 text-slate-700 rounded-[20px] font-bold text-sm transition-all flex items-center justify-center gap-3 group active:scale-[0.98]"
+                                className="w-full h-[50px] sm:h-[54px] bg-white border border-slate-200 sm:border-2 sm:border-slate-100 hover:border-blue-100 hover:bg-blue-50/30 text-slate-700 rounded-xl sm:rounded-[20px] font-bold text-sm transition-all flex items-center justify-center gap-3 group active:scale-[0.98]"
                             >
                                 <svg className="w-5 h-5 group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
                                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -297,7 +298,7 @@ const Login = () => {
                                 Sign in with Google
                             </button>
 
-                            <p className="text-center text-xs font-bold text-slate-400 mt-8">
+                            <p className="text-center text-[11px] sm:text-xs font-bold text-slate-400 mt-6 sm:mt-8 px-4">
                                 Need an account? Contact your administrator 🔔
                             </p>
                         </form>

@@ -30,7 +30,7 @@ import { cn } from "../utils/cn";
 import InstallPrompt from "./ui/InstallPrompt";
 import { useAuth } from "../context/AuthContext";
 
-const Sidebar = () => {
+const Sidebar = ({ isMobile, onCollapse }) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const { logout, user } = useAuth();
     const location = useLocation();
@@ -133,13 +133,16 @@ const Sidebar = () => {
     return (
         <div
             style={{ 
-                width: isCollapsed ? '72px' : '260px' 
+                width: isMobile ? '280px' : (isCollapsed ? '72px' : '260px') 
             }}
-            className="h-screen bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col transition-all duration-300 ease-in-out z-50 sticky top-0 overflow-hidden shadow-sm"
+            className={cn(
+                "h-screen bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col transition-all duration-300 ease-in-out z-50 sticky top-0 overflow-hidden shadow-sm",
+                isMobile ? "w-[280px]" : ""
+            )}
         >
             {/* Header / Logo */}
             <div className="p-5 flex items-center justify-between h-20 shrink-0 border-b border-slate-50 dark:border-slate-800">
-                {!isCollapsed && (
+                {(!isCollapsed || isMobile) && (
                     <div className="flex items-center gap-3 transition-opacity duration-200">
                         <div className={cn(
                             "flex items-center justify-center w-9 h-9 rounded-xl shadow-lg",
@@ -155,15 +158,25 @@ const Sidebar = () => {
                         </div>
                     </div>
                 )}
-                <button
-                    onClick={() => setIsCollapsed(!isCollapsed)}
-                    className={cn(
-                        "p-2 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors",
-                        isCollapsed && "mx-auto"
-                    )}
-                >
-                    {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
-                </button>
+                
+                {isMobile ? (
+                    <button
+                        onClick={onCollapse}
+                        className="p-2 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                    >
+                        <ChevronLeft size={20} />
+                    </button>
+                ) : (
+                    <button
+                        onClick={() => setIsCollapsed(!isCollapsed)}
+                        className={cn(
+                            "p-2 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors",
+                            isCollapsed && "mx-auto"
+                        )}
+                    >
+                        {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+                    </button>
+                )}
             </div>
 
             {/* Scrollable Navigation */}
@@ -186,6 +199,7 @@ const Sidebar = () => {
                                 <NavLink
                                     key={item.path}
                                     to={item.path}
+                                    onClick={() => isMobile && onCollapse && onCollapse()}
                                     className={cn(
                                         "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group relative text-sm font-semibold mb-0.5",
                                     isActive

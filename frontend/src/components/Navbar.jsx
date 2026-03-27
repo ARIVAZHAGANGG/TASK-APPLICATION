@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Search, Bell, CheckCircle2, AlertCircle, Clock, LogOut, Plus, Trash2, Check, Flame, BarChart3, ListTodo, User, ListPlus } from "lucide-react";
+import { Search, Bell, CheckCircle2, AlertCircle, Clock, LogOut, Plus, Trash2, Check, Flame, BarChart3, ListTodo, User, ListPlus, Menu } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -22,7 +22,7 @@ const getPageTitle = (pathname) => {
     return segment ? segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, " ") : "Dashboard";
 };
 
-const Navbar = ({ onNewTask, onNewBulkTask }) => {
+const Navbar = ({ onNewTask, onNewBulkTask, onMenuToggle }) => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
@@ -133,18 +133,24 @@ const Navbar = ({ onNewTask, onNewBulkTask }) => {
     const { searchTerm, setSearchTerm } = useSearch();
 
     return (
-        <header className="h-24 px-10 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between sticky top-0 z-40 transition-all duration-300 shadow-sm">
-            {/* LEFT: Title */}
-            <div className="flex items-center gap-6 shrink-0">
+        <header className="h-20 lg:h-24 px-4 sm:px-6 lg:px-10 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between sticky top-0 z-40 transition-all duration-300 shadow-sm">
+            {/* LEFT: Branding/Title */}
+            <div className="flex items-center gap-3 sm:gap-6 shrink-0">
+                <button 
+                    onClick={onMenuToggle}
+                    className="p-2 lg:hidden rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                >
+                    <Menu size={24} />
+                </button>
                 <div>
-                    <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                    <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight truncate max-w-[150px] sm:max-w-none">
                         {pageTitle}
                     </h1>
                 </div>
             </div>
 
             {/* CENTER: Search Bar (Flex Grow) */}
-            <div className="flex-1 max-w-2xl mx-12 hidden md:block">
+            <div className="flex-1 max-w-2xl mx-4 sm:mx-8 lg:mx-12 hidden md:block">
                 <div className="relative group">
                     <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" size={20} />
                     <input

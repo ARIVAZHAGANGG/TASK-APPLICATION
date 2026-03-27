@@ -28,6 +28,7 @@ import AssignTask from "./pages/AssignTask";
 import StudentList from "./pages/StudentList";
 import MentorList from "./pages/MentorList";
 import QAManagement from "./pages/QAManagement";
+import MentorProfile from "./pages/MentorProfile";
 import AssignedTasks from "./pages/AssignedTasks";
 import Messages from "./pages/Messages";
 
@@ -128,6 +129,7 @@ const AdminNavigator = () => (
       <Route path="/users" element={<UserManagement />} />
       <Route path="/assign-task" element={<AssignTask />} />
       <Route path="/mentors" element={<MentorList />} />
+      <Route path="/mentors/:id" element={<MentorProfile />} />
       <Route path="/calendar" element={<CalendarView />} />
       <Route path="/system-tasks" element={<TaskManagement />} />
       <Route path="/assigned-tasks" element={<AssignedTasks />} />

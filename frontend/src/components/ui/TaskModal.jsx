@@ -354,7 +354,7 @@ const TaskModal = ({ isOpen, onClose, onSave, task = null, initialTab = "details
 
     return (
         <AnimatePresence>
-            <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+            <div className="fixed inset-0 z-[60] flex items-center justify-center p-2 sm:p-4">
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -368,50 +368,56 @@ const TaskModal = ({ isOpen, onClose, onSave, task = null, initialTab = "details
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.9, y: 30 }}
                     transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                    className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-[0_32px_64px_-15px_rgba(0,0,0,0.15)] overflow-hidden border border-slate-100 dark:border-slate-800 flex flex-col h-[85vh] max-h-[900px]"
+                    className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-[28px] sm:rounded-[2.5rem] shadow-[0_32px_64px_-15px_rgba(0,0,0,0.15)] overflow-hidden border border-slate-100 dark:border-slate-800 flex flex-col h-[90vh] sm:h-[85vh] max-h-[900px]"
                 >
-                    <div className="px-8 py-6 border-b border-slate-50 dark:border-slate-800 flex items-center justify-between bg-white dark:bg-slate-900 z-10 shrink-0">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-2xl bg-primary-50 dark:bg-primary-900/20 text-primary-600 flex items-center justify-center">
-                                <Plus size={24} />
+                    <div className="px-5 py-4 sm:px-8 sm:py-6 border-b border-slate-50 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 z-10 shrink-0">
+                        <div className="flex items-center justify-between w-full sm:w-auto">
+                            <div className="flex items-center gap-2 sm:gap-3">
+                                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-primary-50 dark:bg-primary-900/20 text-primary-600 flex items-center justify-center">
+                                    <Plus size={20} className="sm:hidden" />
+                                    <Plus size={24} className="hidden sm:block" />
+                                </div>
+                                <h2 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">
+                                    {task ? "Update Task" : "New Task"}
+                                </h2>
                             </div>
-                            <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">
-                                {task ? "Update Task" : "New Task"}
-                            </h2>
+                            <button onClick={onClose} className="p-2 sm:hidden text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-all">
+                                <X size={20} />
+                            </button>
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto pb-1 sm:pb-0 custom-scrollbar no-scrollbar">
                             {task && (
-                                <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl mr-2">
+                                <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl sm:rounded-2xl shrink-0">
                                     <button
                                         type="button"
                                         onClick={() => setActiveTab("details")}
                                         className={cn(
-                                            "px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2",
+                                            "px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-1.5 sm:gap-2 whitespace-nowrap",
                                             activeTab === "details" ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm" : "text-slate-400 hover:text-slate-600"
                                         )}
                                     >
-                                        <Info size={14} /> Details
+                                        <Info size={12} className="sm:size-[14px]" /> Details
                                     </button>
                                     <button
                                         type="button"
                                         onClick={() => setActiveTab("submission")}
                                         className={cn(
-                                            "px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2",
+                                            "px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-1.5 sm:gap-2 whitespace-nowrap",
                                             activeTab === "submission" ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm" : "text-slate-400 hover:text-slate-600"
                                         )}
                                     >
-                                        <ExternalLink size={14} /> {isStudent ? "Submit" : "Review"}
+                                        <ExternalLink size={12} className="sm:size-[14px]" /> {isStudent ? "Submit" : "Review"}
                                     </button>
                                     <button
                                         type="button"
                                         disabled={!task}
                                         onClick={() => setActiveTab("chat")}
                                         className={cn(
-                                            "px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed",
+                                            "px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-1.5 sm:gap-2 disabled:opacity-30 disabled:cursor-not-allowed whitespace-nowrap",
                                             activeTab === "chat" ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm" : "text-slate-400 hover:text-slate-600"
                                         )}
                                     >
-                                        <MessageSquare size={14} /> Chat
+                                        <MessageSquare size={12} className="sm:size-[14px]" /> Chat
                                     </button>
                                 </div>
                             )}
@@ -419,17 +425,17 @@ const TaskModal = ({ isOpen, onClose, onSave, task = null, initialTab = "details
                                 type="button"
                                 onClick={() => setIsBulkMode(!isBulkMode)}
                                 className={cn(
-                                    "p-2 rounded-xl transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider",
+                                    "p-1.5 sm:p-2 rounded-xl transition-all flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-bold uppercase tracking-wider whitespace-nowrap shrink-0",
                                     isBulkMode
                                         ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
                                         : "bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-blue-500"
                                 )}
                                 title="Bulk Mode - Add multiple tasks list-wise"
                             >
-                                <ListPlus size={18} />
+                                <ListPlus size={16} className="sm:size-[18px]" />
                                 {!isBulkMode ? "" : "Bulk Mode"}
                             </button>
-                            <button onClick={onClose} className="p-2 text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-all">
+                            <button onClick={onClose} className="hidden sm:block p-2 text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-all">
                                 <X size={20} />
                             </button>
                         </div>
@@ -457,15 +463,15 @@ const TaskModal = ({ isOpen, onClose, onSave, task = null, initialTab = "details
                                         initial={{ opacity: 0, x: -20 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         exit={{ opacity: 0, x: 20 }}
-                                        className="absolute inset-0 p-8 space-y-6 overflow-y-auto custom-scrollbar"
+                                        className="absolute inset-0 p-5 sm:p-8 space-y-5 sm:space-y-6 overflow-y-auto custom-scrollbar"
                                     >
                             {formData.createdAt && (
-                                <div className="mb-4 flex items-center justify-between px-2">
+                                <div className="mb-4 flex items-center justify-between px-1">
                                     <div className="flex items-center gap-2">
                                         <div className="w-1.5 h-1.5 rounded-full bg-slate-400" />
-                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Registered</span>
+                                        <span className="text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Registered</span>
                                     </div>
-                                    <span className="text-[10px] font-black text-slate-500 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full uppercase tracking-widest">
+                                    <span className="text-[9px] sm:text-[10px] font-black text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 sm:px-3 py-1 rounded-full uppercase tracking-widest">
                                         {new Date(formData.createdAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
                                     </span>
                                 </div>
@@ -473,18 +479,18 @@ const TaskModal = ({ isOpen, onClose, onSave, task = null, initialTab = "details
 
                             {task && (task.assignedToUserId || task.assignedByUserId || task.targetType !== 'Individual') && (
                                 <div className="p-4 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-2xl border border-indigo-100 dark:border-indigo-800/30 space-y-2">
-                                    <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Assignment Scope</p>
-                                    <div className="flex items-center gap-4 flex-wrap">
+                                    <p className="text-[9px] sm:text-[10px] font-black text-indigo-400 uppercase tracking-widest">Assignment Scope</p>
+                                    <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
                                         {task.assignedByUserId && (
                                             <div className="flex flex-col">
-                                                <span className="text-[10px] font-bold text-slate-400 uppercase">From</span>
-                                                <span className="text-sm font-bold text-slate-800 dark:text-slate-200">{task.assignedByUserId?.name}</span>
+                                                <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase">From</span>
+                                                <span className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">{task.assignedByUserId?.name}</span>
                                             </div>
                                         )}
                                         {(task.assignedByUserId && (task.assignedToUserId || task.targetType !== 'Individual')) && <div className="h-4 w-px bg-slate-200 dark:bg-slate-700 mx-1" />}
                                         <div className="flex flex-col">
-                                            <span className="text-[10px] font-bold text-slate-400 uppercase">Target</span>
-                                            <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400">
+                                            <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase">Target</span>
+                                            <span className="text-xs sm:text-sm font-bold text-indigo-600 dark:text-indigo-400">
                                                 {task.targetType === 'All' ? 'All Students' : 
                                                  task.targetType === 'Specific Batch' ? `${task.department} (${task.batch})` :
                                                  task.assignedToUserId?.name || task.assignedTo?.name || 'Personal'}
@@ -494,9 +500,9 @@ const TaskModal = ({ isOpen, onClose, onSave, task = null, initialTab = "details
                                 </div>
                             )}
 
-                            <div className="space-y-6">
+                            <div className="space-y-5 sm:space-y-6">
                                 <div className="space-y-2">
-                                    <div className="flex items-center justify-between ml-1">
+                                    <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-2 ml-1">
                                         <label className="text-sm font-bold text-slate-700 dark:text-slate-300">
                                             {isBulkMode ? "Task List (one per line)" : "Task Name"}
                                         </label>
@@ -505,7 +511,7 @@ const TaskModal = ({ isOpen, onClose, onSave, task = null, initialTab = "details
                                                 type="button"
                                                 onClick={toggleListening}
                                                 className={cn(
-                                                    "flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest transition-all",
+                                                    "w-fit flex items-center gap-2 px-3 py-1.5 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all",
                                                     isListening 
                                                         ? "bg-rose-500 text-white animate-pulse" 
                                                         : isProcessingVoice 
@@ -514,11 +520,11 @@ const TaskModal = ({ isOpen, onClose, onSave, task = null, initialTab = "details
                                                 )}
                                             >
                                                 {isProcessingVoice ? (
-                                                    <Loader2 size={12} className="animate-spin" />
+                                                    <Loader2 size={10} className="animate-spin" />
                                                 ) : isListening ? (
-                                                    <MicOff size={12} />
+                                                    <MicOff size={10} />
                                                 ) : (
-                                                    <Mic size={12} />
+                                                    <Mic size={10} />
                                                 )}
                                                 {isProcessingVoice ? "AI Assessing..." : isListening ? "Listening..." : "Voice Assessment"}
                                             </button>
@@ -531,7 +537,7 @@ const TaskModal = ({ isOpen, onClose, onSave, task = null, initialTab = "details
                                             required
                                             disabled={isReadOnly}
                                             placeholder="Task 1&#10;Task 2&#10;Task 3"
-                                            className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border-none rounded-2xl outline-none transition-all duration-300 focus:ring-4 focus:ring-primary-100 text-slate-800 dark:text-slate-100 placeholder:text-slate-400 min-h-[120px] font-medium disabled:opacity-70"
+                                            className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border-none rounded-2xl outline-none transition-all duration-300 focus:ring-4 focus:ring-primary-100 text-slate-800 dark:text-slate-100 placeholder:text-slate-400 min-h-[100px] sm:min-h-[120px] font-medium disabled:opacity-70"
                                         />
                                     ) : (
                                         <Input
@@ -539,7 +545,7 @@ const TaskModal = ({ isOpen, onClose, onSave, task = null, initialTab = "details
                                             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                             required
                                             disabled={isReadOnly}
-                                            className="bg-slate-50 dark:bg-slate-800 border-none text-slate-800 dark:text-slate-100"
+                                            className="bg-slate-50 dark:bg-slate-800 border-none text-slate-800 dark:text-slate-100 py-3 sm:py-4"
                                         />
                                     )}
                                 </div>
@@ -548,12 +554,12 @@ const TaskModal = ({ isOpen, onClose, onSave, task = null, initialTab = "details
                                     <div className="flex items-center justify-between ml-1">
                                         <label className="text-sm font-bold text-slate-700 dark:text-slate-300">Priority Level</label>
                                         {isSuggesting && (
-                                            <span className="text-[10px] text-primary-600 font-bold uppercase animate-pulse">
-                                                AI is suggesting...
+                                            <span className="text-[9px] sm:text-[10px] text-primary-600 font-bold uppercase animate-pulse">
+                                                AI Suggesting...
                                             </span>
                                         )}
                                     </div>
-                                    <div className="grid grid-cols-3 gap-3">
+                                    <div className="grid grid-cols-3 gap-2 sm:gap-3">
                                         {priorities.map((p) => (
                                             <button
                                                 key={p.id}
@@ -561,7 +567,7 @@ const TaskModal = ({ isOpen, onClose, onSave, task = null, initialTab = "details
                                                 disabled={isReadOnly}
                                                 onClick={() => setFormData({ ...formData, priority: p.id })}
                                                 className={cn(
-                                                    "py-2.5 rounded-2xl border-2 transition-all duration-300 text-sm font-bold",
+                                                    "py-2 sm:py-2.5 rounded-xl sm:rounded-2xl border-2 transition-all duration-300 text-xs sm:text-sm font-bold",
                                                     formData.priority === p.id
                                                         ? `${p.bg} ${p.color} border-current ring-4 ring-current/10 dark:bg-opacity-20`
                                                         : "bg-white dark:bg-slate-800 text-slate-400 border-slate-100 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600",
@@ -574,7 +580,7 @@ const TaskModal = ({ isOpen, onClose, onSave, task = null, initialTab = "details
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Task Type</label>
                                         <select
@@ -600,7 +606,7 @@ const TaskModal = ({ isOpen, onClose, onSave, task = null, initialTab = "details
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <Input
                                             type="date"
@@ -663,10 +669,10 @@ const TaskModal = ({ isOpen, onClose, onSave, task = null, initialTab = "details
                                     </div>
                                 )}
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
                                     <div className="space-y-2">
                                         <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Est. Duration</label>
-                                        <div className="flex gap-2">
+                                        <div className="flex flex-wrap sm:flex-nowrap gap-2">
                                             {[
                                                 { label: '30m', value: 30 },
                                                 { label: '1h', value: 60 },
@@ -679,7 +685,7 @@ const TaskModal = ({ isOpen, onClose, onSave, task = null, initialTab = "details
                                                     disabled={isReadOnly}
                                                     onClick={() => setFormData({ ...formData, estimatedTime: d.value })}
                                                     className={cn(
-                                                        "flex-1 py-3 px-1 rounded-2xl border-2 text-[10px] font-black uppercase tracking-widest transition-all",
+                                                        "flex-1 min-w-[50px] py-2 sm:py-3 px-1 rounded-xl sm:rounded-2xl border-2 text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all",
                                                         formData.estimatedTime === d.value
                                                             ? "bg-primary-600 text-white border-primary-600 shadow-md"
                                                             : "bg-white dark:bg-slate-800 text-slate-400 border-slate-100 dark:border-slate-800",
@@ -694,8 +700,8 @@ const TaskModal = ({ isOpen, onClose, onSave, task = null, initialTab = "details
 
                                     <div className="space-y-2">
                                         <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Expected Finish</label>
-                                        <div className="px-5 py-3.5 bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-800/30 rounded-2xl flex items-center justify-between">
-                                            <span className="text-xs font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest italic">Target</span>
+                                        <div className="px-4 py-2.5 sm:px-5 sm:py-3.5 bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-800/30 rounded-2xl flex items-center justify-between">
+                                            <span className="text-[10px] sm:text-xs font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest italic">Target</span>
                                             <span className="text-sm font-black text-emerald-700 dark:text-emerald-300 font-mono">
                                                 {formData.dueDate ? (
                                                     new Date(new Date(formData.dueDate).getTime() + formData.estimatedTime * 60000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -706,8 +712,8 @@ const TaskModal = ({ isOpen, onClose, onSave, task = null, initialTab = "details
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Recurrence</label>
-                                    <div className="grid grid-cols-4 gap-2">
+                                    <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Recurrence Cycle</label>
+                                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                                         {[
                                             { id: "none", label: "None" },
                                             { id: "daily", label: "Daily" },
@@ -720,7 +726,7 @@ const TaskModal = ({ isOpen, onClose, onSave, task = null, initialTab = "details
                                                 disabled={isReadOnly}
                                                 onClick={() => setFormData({ ...formData, recurrence: r.id })}
                                                 className={cn(
-                                                    "py-2 rounded-xl border-2 text-xs font-bold transition-all",
+                                                    "py-2 sm:py-2.5 rounded-xl border-2 text-[10px] sm:text-xs font-bold transition-all",
                                                     formData.recurrence === r.id
                                                         ? "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-blue-200"
                                                         : "bg-white dark:bg-slate-800 text-slate-400 border-slate-100 dark:border-slate-700",
@@ -853,7 +859,7 @@ const TaskModal = ({ isOpen, onClose, onSave, task = null, initialTab = "details
                                         initial={{ opacity: 0, x: 20 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         exit={{ opacity: 0, x: -20 }}
-                                        className="absolute inset-0 p-8"
+                                        className="absolute inset-0 p-5 sm:p-8"
                                     >
                                         <TaskChat taskId={(task?.id || task?._id)?.toString()} />
                                     </motion.div>
@@ -863,13 +869,13 @@ const TaskModal = ({ isOpen, onClose, onSave, task = null, initialTab = "details
                                         initial={{ opacity: 0, x: 20 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         exit={{ opacity: 0, x: -20 }}
-                                        className="absolute inset-0 p-8 space-y-6 overflow-y-auto custom-scrollbar"
+                                        className="absolute inset-0 p-5 sm:p-8 space-y-5 sm:space-y-6 overflow-y-auto custom-scrollbar"
                                     >
                                         {isStudent ? (
-                                            <div className="space-y-6">
-                                                 <div className="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm space-y-4">
-                                                    <h3 className="text-lg font-black text-slate-800 dark:text-white mb-2 uppercase tracking-tighter">Submit Your Work</h3>
-                                                    <p className="text-xs font-bold text-slate-500 mb-4 leading-relaxed">Provide a link to your completed task or type your answer below.</p>
+                                            <div className="space-y-5 sm:space-y-6">
+                                                 <div className="p-5 sm:p-6 bg-slate-50 dark:bg-slate-800/30 rounded-[28px] sm:rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm space-y-4">
+                                                    <h3 className="text-base sm:text-lg font-black text-slate-800 dark:text-white mb-2 uppercase tracking-tighter">Submit Your Work</h3>
+                                                    <p className="text-[11px] sm:text-xs font-bold text-slate-500 mb-4 leading-relaxed">Provide a link to your completed task or type your answer below.</p>
                                                     <div className="space-y-4">
                                                         <Input
                                                             label="Submission Link (URL)"
@@ -889,7 +895,7 @@ const TaskModal = ({ isOpen, onClose, onSave, task = null, initialTab = "details
                                                             type="button"
                                                             onClick={handleSubmitWork}
                                                             disabled={isSubmittingWork || (!submissionLink.trim() && !submissionAnswer.trim())}
-                                                            className="w-full py-4 bg-primary-600 text-white font-black text-xs uppercase tracking-[0.2em] rounded-2xl shadow-lg shadow-primary-500/20 hover:bg-primary-700 disabled:opacity-50 transition-all active:scale-[0.98]"
+                                                            className="w-full py-3.5 sm:py-4 bg-primary-600 text-white font-black text-[10px] sm:text-xs uppercase tracking-[0.2em] rounded-xl sm:rounded-2xl shadow-lg shadow-primary-500/20 hover:bg-primary-700 disabled:opacity-50 transition-all active:scale-[0.98]"
                                                         >
                                                             {isSubmittingWork ? "Uploading..." : "Publish Submission"}
                                                         </button>
@@ -897,19 +903,19 @@ const TaskModal = ({ isOpen, onClose, onSave, task = null, initialTab = "details
                                                 </div>
 
                                                 <div className="space-y-4">
-                                                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Submission Status</h4>
+                                                    <h4 className="text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Submission Status</h4>
                                                     {submissions.length > 0 ? (
                                                         submissions.filter(s => s.studentId === user.id || s.studentId?._id === user.id).map(s => (
                                                              <div key={s._id} className="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 flex flex-col gap-3">
                                                                 <div className="flex items-center justify-between">
                                                                     <div className="flex flex-col gap-1">
                                                                         {s.uploadedFileLink && (
-                                                                            <a href={s.uploadedFileLink.startsWith('http') ? s.uploadedFileLink : `https://${s.uploadedFileLink}`} target="_blank" rel="noreferrer" className="text-sm font-bold text-blue-500 hover:underline flex items-center gap-2">View Link <ExternalLink size={12}/></a>
+                                                                            <a href={s.uploadedFileLink.startsWith('http') ? s.uploadedFileLink : `https://${s.uploadedFileLink}`} target="_blank" rel="noreferrer" className="text-xs sm:text-sm font-bold text-blue-500 hover:underline flex items-center gap-2">View Link <ExternalLink size={12}/></a>
                                                                         )}
-                                                                        <span className="text-[10px] font-bold text-slate-400">{new Date(s.submissionDate || s.createdAt).toLocaleString()}</span>
+                                                                        <span className="text-[9px] sm:text-[10px] font-bold text-slate-400">{new Date(s.submissionDate || s.createdAt).toLocaleString()}</span>
                                                                     </div>
                                                                     <span className={cn(
-                                                                        "badge",
+                                                                        "badge text-[9px]",
                                                                         s.status === 'approved' ? "badge-success" : s.status === 'rejected' ? "badge-danger" : "badge-warning"
                                                                     )}>{s.status}</span>
                                                                 </div>
@@ -1015,15 +1021,15 @@ const TaskModal = ({ isOpen, onClose, onSave, task = null, initialTab = "details
                             </AnimatePresence>
                         </div>
 
-                        <div className="flex items-center gap-3 p-8 pt-4 border-t border-slate-50 dark:border-slate-800 bg-white dark:bg-slate-900">
+                        <div className="flex items-center gap-3 p-5 sm:p-8 pt-4 border-t border-slate-50 dark:border-slate-800 bg-white dark:bg-slate-900">
                             <button
                                 type="button"
                                 onClick={onClose}
                                 className={cn(
-                                    "py-4 rounded-2xl font-bold transition-all",
+                                    "py-3 sm:py-4 rounded-xl sm:rounded-2xl font-bold transition-all",
                                     isReadOnly 
                                         ? "flex-1 bg-slate-900 dark:bg-primary-600 text-white shadow-xl shadow-slate-900/10 hover:shadow-2xl hover:bg-black dark:hover:bg-primary-700" 
-                                        : "flex-1 px-6 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800"
+                                        : "flex-1 px-4 sm:px-6 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm sm:text-base"
                                 )}
                             >
                                 {isReadOnly ? "Close View" : "Cancel"}
@@ -1031,9 +1037,9 @@ const TaskModal = ({ isOpen, onClose, onSave, task = null, initialTab = "details
                             {!isReadOnly && (
                                 <button
                                     type="submit"
-                                    className="flex-[2] py-4 px-6 rounded-2xl bg-slate-900 dark:bg-primary-600 text-white font-bold shadow-xl shadow-slate-900/10 hover:shadow-2xl hover:bg-black dark:hover:bg-primary-700 transition-all"
+                                    className="flex-[2] py-3 sm:py-4 px-4 sm:px-6 rounded-xl sm:rounded-2xl bg-slate-900 dark:bg-primary-600 text-white font-bold shadow-xl shadow-slate-900/10 hover:shadow-2xl hover:bg-black dark:hover:bg-primary-700 transition-all text-sm sm:text-base"
                                 >
-                                    {isBulkMode ? "Launch Tasks" : task ? "Update Objective" : "Launch Task"}
+                                    {isBulkMode ? "Launch" : task ? "Update" : "Launch"}
                                 </button>
                             )}
                         </div>

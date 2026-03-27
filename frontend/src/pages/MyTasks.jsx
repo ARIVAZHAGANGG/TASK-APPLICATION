@@ -145,19 +145,19 @@ const MyTasks = () => {
     );
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 pb-24 md:pb-8 pt-4 md:pt-0 px-4 md:px-0">
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900">My Tasks</h1>
-                    <p className="text-slate-500">Manage all duties created by you.</p>
+                    <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">My Tasks</h1>
+                    <p className="text-xs sm:text-sm text-slate-500 font-medium">Manage all duties created by you.</p>
                 </div>
 
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => { setSelectedTask(null); setIsModalOpen(true); }}
-                        className="p-2 bg-slate-900 text-white rounded-xl hover:bg-black transition-colors"
+                        className="p-2 sm:p-3 bg-slate-900 dark:bg-slate-800 text-white rounded-xl hover:bg-black dark:hover:bg-slate-700 transition-colors shadow-lg"
                     >
-                        <Plus size={20} />
+                        <Plus size={20} className="sm:size-5" />
                     </button>
                 </div>
             </header>
@@ -191,17 +191,17 @@ const MyTasks = () => {
                     </AnimatePresence>
                 </motion.div>
             ) : (
-                <div className="bg-white border border-slate-100 rounded-3xl p-12 text-center shadow-sm">
-                    <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 mx-auto mb-4">
-                        <CheckCircle2 size={32} />
+                <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[2rem] sm:rounded-3xl p-8 sm:p-12 text-center shadow-sm">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-slate-50 dark:bg-slate-800 rounded-xl sm:rounded-2xl flex items-center justify-center text-slate-400 mx-auto mb-4">
+                        <CheckCircle2 size={24} className="sm:size-8" />
                     </div>
-                    <h3 className="text-lg font-bold text-slate-800">No tasks found</h3>
-                    <p className="text-slate-500 max-w-xs mx-auto mt-2">
+                    <h3 className="text-base sm:text-lg font-black text-slate-800 dark:text-white uppercase tracking-tight">No tasks found</h3>
+                    <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-xs mx-auto mt-2 font-medium">
                         {searchTerm ? "No tasks match your search criteria." : "You haven't created any tasks yet. Start by adding one!"}
                     </p>
                     <button
                         onClick={() => setIsModalOpen(true)}
-                        className="mt-6 px-6 py-2 bg-primary-600 text-white rounded-xl font-bold hover:bg-primary-700 transition"
+                        className="mt-6 px-6 py-2.5 bg-primary-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-primary-700 transition shadow-lg shadow-primary-500/20"
                     >
                         Create First Task
                     </button>

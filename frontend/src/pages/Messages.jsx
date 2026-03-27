@@ -110,15 +110,15 @@ const Messages = () => {
     );
 
     return (
-        <div className="h-[calc(100vh-8rem)] max-w-7xl mx-auto flex gap-6 p-4 md:p-6 overflow-hidden">
+        <div className="h-[calc(100vh-64px)] sm:h-[calc(100vh-8rem)] max-w-7xl mx-auto flex gap-0 md:gap-6 p-0 md:p-6 overflow-hidden bg-white dark:bg-slate-950 md:bg-transparent">
             {/* Sidebar: Conversation List (Hidden on mobile if chat is selected) */}
             <div className={cn(
-                "w-full md:w-80 lg:w-96 flex flex-col bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shrink-0 overflow-hidden shadow-sm transition-all",
+                "w-full md:w-80 lg:w-96 flex flex-col bg-white dark:bg-slate-900 md:rounded-[2.5rem] border-r md:border border-slate-200 dark:border-slate-800 shrink-0 overflow-hidden shadow-sm transition-all",
                 selectedChat && "hidden md:flex"
             )}>
                 {/* Search Header */}
-                <div className="p-6 border-b border-slate-100 dark:border-slate-800">
-                    <h2 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight mb-4 flex items-center gap-3">
+                <div className="p-4 sm:p-6 border-b border-slate-100 dark:border-slate-800">
+                    <h2 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight mb-4 flex items-center gap-3">
                         <MessageSquare className={cn(
                             user?.role === 'admin' ? "text-rose-500" :
                             user?.role === 'mentor' ? "text-indigo-500" :
@@ -133,7 +133,7 @@ const Messages = () => {
                             placeholder="Find transmission..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 rounded-2xl text-sm font-medium focus:ring-4 focus:ring-primary-500/10 outline-none transition-all dark:text-white"
+                            className="w-full pl-12 pr-4 py-2.5 sm:py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 rounded-2xl text-sm font-medium focus:ring-4 focus:ring-primary-500/10 outline-none transition-all dark:text-white"
                         />
                     </div>
                 </div>
@@ -284,7 +284,10 @@ const Messages = () => {
             </div>
 
             {/* Main Chat Area */}
-            <div className="flex-1 flex flex-col bg-slate-50/50 dark:bg-slate-950/20 rounded-[2.5rem] overflow-hidden">
+            <div className={cn(
+                "flex-1 flex flex-col bg-slate-50/50 dark:bg-slate-950/20 md:rounded-[2.5rem] overflow-hidden transition-all",
+                !selectedChat && "hidden md:flex"
+            )}>
                 <AnimatePresence mode="wait">
                     {selectedChat ? (
                         <motion.div 

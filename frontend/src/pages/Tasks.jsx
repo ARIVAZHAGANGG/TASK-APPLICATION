@@ -293,24 +293,24 @@ const Tasks = ({ filter = "all" }) => {
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center justify-center py-32 text-center"
+            className="flex flex-col items-center justify-center py-16 sm:py-32 text-center"
         >
-            <div className="relative mb-8">
-                <div className="absolute inset-0 bg-primary-500/10 blur-[60px] rounded-full" />
-                <div className="relative w-24 h-24 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl rounded-3xl shadow-xl flex items-center justify-center text-primary-500 border border-white/20 dark:border-slate-800/50">
-                    <ListTodo size={48} strokeWidth={1.5} />
+            <div className="relative mb-6 sm:mb-8">
+                <div className="absolute inset-0 bg-primary-500/10 blur-[40px] sm:blur-[60px] rounded-full" />
+                <div className="relative w-20 h-20 sm:w-24 sm:h-24 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-xl flex items-center justify-center text-primary-500 border border-white/20 dark:border-slate-800/50">
+                    <ListTodo size={40} className="sm:size-12" strokeWidth={1.5} />
                 </div>
                 <motion.div
-                    animate={{ y: [0, -10, 0] }}
+                    animate={{ y: [0, -8, 0] }}
                     transition={{ repeat: Infinity, duration: 3 }}
-                    className="absolute -top-4 -right-4 w-10 h-10 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center shadow-lg border border-amber-200"
+                    className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 w-8 h-8 sm:w-10 sm:h-10 bg-amber-100 text-amber-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg border border-amber-200"
                 >
-                    <Plus size={20} strokeWidth={3} />
+                    <Plus size={16} className="sm:size-5" strokeWidth={3} />
                 </motion.div>
             </div>
-            <h3 className="text-2xl font-bold text-slate-800 dark:text-white tracking-tight">Focus on what matters</h3>
-            <p className="text-slate-500 dark:text-slate-400 mt-3 max-w-sm mx-auto text-lg leading-relaxed">
-                Your workspace is currently clear. Reach out to a mentor or administrator to start your journey.
+            <h3 className="text-xl sm:text-2xl font-black text-slate-800 dark:text-white uppercase tracking-tight">Focus on what matters</h3>
+            <p className="text-xs sm:text-lg text-slate-500 dark:text-slate-400 mt-2 sm:mt-3 max-w-xs sm:max-w-sm mx-auto font-medium leading-relaxed px-4">
+                Your workspace is currently clear. Reach out to a mentor and start your journey.
             </p>
         </motion.div>
     );
@@ -338,18 +338,18 @@ const Tasks = ({ filter = "all" }) => {
     }, [tasks, searchTerm]);
 
     return (
-        <div className="max-w-6xl mx-auto px-2 sm:px-4 pb-20 overflow-x-hidden">
-            <div className="flex items-center justify-between mb-8">
-                <div className="flex flex-col gap-1">
-                    <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+        <div className="max-w-6xl mx-auto px-4 sm:px-4 pb-24 md:pb-20 overflow-x-hidden pt-4 md:pt-0">
+            <div className="flex items-center justify-between mb-6 sm:mb-8">
+                <div className="flex flex-col gap-1.5 sm:gap-1">
+                    <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight truncate max-w-[280px] sm:max-w-none">
                         {targetStudentName ? `${targetStudentName}'s Tasks` : "Objectives"}
                     </h2>
-                    <div className="flex items-center gap-3">
-                        <span className="px-3 py-1 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-lg text-[10px] font-black uppercase tracking-wider">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                        <span className="px-2 sm:px-3 py-0.5 sm:py-1 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-lg text-[9px] sm:text-[10px] font-black uppercase tracking-wider">
                             {filteredTasks.filter(t => !t.completed).length} Pending
                         </span>
-                        <span className="text-slate-400 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider">
-                            {filteredTasks.length} Total Objectives
+                        <span className="text-slate-400 dark:text-slate-500 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider">
+                            {filteredTasks.length} Total
                         </span>
                     </div>
                 </div>
