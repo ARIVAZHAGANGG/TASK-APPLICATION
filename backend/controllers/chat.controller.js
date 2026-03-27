@@ -192,13 +192,30 @@ exports.deleteMessage = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Message not found' });
         }
 
-        // Only sender or admin can delete
-        if (message.senderId.toString() !== currentUserId && req.user.role !== 'admin') {
-            return res.status(403).json({ success: false, message: 'Unauthorized to delete this message' });
-        }
-
         const receiverId = message.receiverId.toString();
         const senderId = message.senderId.toString();
+
+        // Permission check
+        let isAuthorized = false;
+
+        // 1. Sender can always delete
+        if (senderId === currentUserId) isAuthorized = true;
+
+        // 2. Admin can always delete
+        if (req.user.role === 'admin') isAuthorized = true;
+
+        // 3. Mentor can delete if they are the assigned mentor for the student in the chat
+        if (!isAuthorized && req.user.role === 'mentor') {
+            const studentId = message.role === 'student' ? senderId : receiverId;
+            const student = await User.findById(studentId);
+            if (student && student.mentorId && student.mentorId.toString() === currentUserId) {
+                isAuthorized = true;
+            }
+        }
+
+        if (!isAuthorized) {
+            return res.status(403).json({ success: false, message: 'Unauthorized to delete this message' });
+        }
 
         await ChatMessage.findByIdAndDelete(messageId);
 

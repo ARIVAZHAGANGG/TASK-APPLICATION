@@ -165,8 +165,9 @@ const ChatWindow = ({ recipientId, recipientName, onClose }) => {
                     </div>
                 ) : (
                     messages.map((msg, index) => {
-                        const isMe = msg.senderId === user?.id || (msg.senderId?._id === user?.id) || (msg.senderId?.id === user?.id);
-                        const canDelete = isMe || user?.role === 'admin';
+                        const msgSenderId = msg.senderId?.id || msg.senderId?._id || msg.senderId;
+                        const isMe = String(msgSenderId) === String(user?.id);
+                        const canDelete = isMe || user?.role === 'admin' || user?.role === 'mentor'; // Mentor can delete based on backend check
                         const msgId = msg.id || msg._id;
 
                         return (
@@ -181,7 +182,8 @@ const ChatWindow = ({ recipientId, recipientName, onClose }) => {
                                     {isMe && canDelete && (
                                         <button 
                                             onClick={() => handleDeleteMessage(msgId)}
-                                            className="opacity-0 group-hover:opacity-100 p-1.5 text-slate-300 hover:text-rose-500 transition-all"
+                                            className="opacity-40 group-hover:opacity-100 p-1.5 text-slate-400 hover:text-rose-500 transition-all"
+                                            title="Delete Message"
                                         >
                                             <Trash2 size={14} />
                                         </button>
@@ -202,7 +204,8 @@ const ChatWindow = ({ recipientId, recipientName, onClose }) => {
                                     {!isMe && canDelete && (
                                         <button 
                                             onClick={() => handleDeleteMessage(msgId)}
-                                            className="opacity-0 group-hover:opacity-100 p-1.5 text-slate-300 hover:text-rose-500 transition-all"
+                                            className="opacity-0 group-hover:opacity-100 p-1.5 text-slate-400 hover:text-rose-500 transition-all"
+                                            title="Delete Message"
                                         >
                                             <Trash2 size={14} />
                                         </button>
