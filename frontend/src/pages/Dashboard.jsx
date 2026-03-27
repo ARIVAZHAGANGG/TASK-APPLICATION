@@ -109,7 +109,7 @@ const Dashboard = () => {
         <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="p-10 max-w-[1600px] mx-auto transition-colors duration-300 relative z-10 min-h-screen"
+            className="p-4 sm:p-6 lg:p-10 pb-24 lg:pb-10 max-w-[1600px] mx-auto transition-colors duration-300 relative z-10 min-h-screen"
         >
             {/* Immersive Background Fragments */}
             <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
@@ -121,7 +121,7 @@ const Dashboard = () => {
                 <div className="absolute -bottom-[10%] left-[20%] w-[35%] h-[35%] blur-[110px] opacity-[0.1] dark:opacity-[0.05] bg-emerald-500 rounded-full" />
             </div>
 
-            <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8 lg:mb-12 bg-vibrant-single p-6 sm:p-8 rounded-[32px] lg:rounded-[40px] border border-white/20 shadow-2xl relative overflow-hidden group">
+            <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6 lg:mb-12 bg-vibrant-single p-4 sm:p-6 lg:p-8 rounded-[24px] lg:rounded-[40px] border border-white/20 shadow-2xl relative overflow-hidden group">
                 {/* Background Glass Overlay */}
                 <div className="absolute inset-0 bg-white/10 dark:bg-black/20 backdrop-blur-md" />
                 
@@ -184,7 +184,7 @@ const Dashboard = () => {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-8">
                     <StatsCard title="Total Objectives" value={stats?.totalTasks || 0} icon={Zap} color="primary" index={0} />
                     <StatsCard
                         title="Successful Completion"
