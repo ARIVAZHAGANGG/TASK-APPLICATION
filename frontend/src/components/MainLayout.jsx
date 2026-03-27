@@ -2,7 +2,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import api from "../services/api";
 import VoiceAssistant from "./ui/VoiceAssistant";

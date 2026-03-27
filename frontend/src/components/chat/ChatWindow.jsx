@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, User, MessageSquare, Loader2, AlertCircle, Bot, X, Trash2 } from 'lucide-react';
+import { Send, User, MessageSquare, Loader2, AlertCircle, Bot, X, Trash2, ArrowLeft } from 'lucide-react';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { useSocket } from '../../context/SocketContext';
