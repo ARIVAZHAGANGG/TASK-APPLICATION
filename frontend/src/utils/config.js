@@ -34,7 +34,7 @@ export const BASE_API_URL = `${SOCKET_URL}/api`;
 
 export const GOOGLE_CLIENT_ID = getEnv(
     'REACT_APP_GOOGLE_CLIENT_ID', 
-    '1081329535093-4lbrbt4o3v2r51he2tkv7tspbk2qmtf9.apps.googleusercontent.com'
+    '405613017661-2blivk5qavge0kprqb18pcvfcqpc2s38.apps.googleusercontent.com'
 );
 
 console.log('🌐 API Configuration:', {
