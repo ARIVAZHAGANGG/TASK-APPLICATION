@@ -15,6 +15,9 @@ const Tasks = ({ filter = "all" }) => {
     const location = useLocation();
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [loadMoreLoading, setLoadMoreLoading] = useState(false);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedTaskIds, setSelectedTaskIds] = useState([]);
     const [selectedTask, setSelectedTask] = useState(null);
@@ -25,13 +28,17 @@ const Tasks = ({ filter = "all" }) => {
     // AI/Reminder Hooks
     useReminder(tasks);
 
-    const fetchTasks = useCallback(async () => {
-        setLoading(true);
+    const fetchTasks = useCallback(async (pageNum = 1, append = false) => {
+        if (pageNum === 1) setLoading(true);
+        else setLoadMoreLoading(true);
+
         try {
             let url = "/tasks";
             const params = new URLSearchParams();
 
             if (filter !== "all") params.append("filter", filter);
+            params.append("page", pageNum);
+            params.append("limit", 20); // Smaller limit for faster initial load
             
             // Handle studentId filtering from URL
             const queryParams = new URLSearchParams(location.search);
@@ -43,16 +50,27 @@ const Tasks = ({ filter = "all" }) => {
 
             const res = await api.get(url);
 
-            // Handle both old and new response formats (backward compatible)
             const tasksData = res.data.data || res.data;
+            const pagination = res.data.pagination;
+            
             const finalTasks = Array.isArray(tasksData) ? tasksData : [];
-            setTasks(finalTasks);
+            
+            if (append) {
+                setTasks(prev => [...prev, ...finalTasks]);
+            } else {
+                setTasks(finalTasks);
+            }
+
+            if (pagination) {
+                setTotalPages(pagination.pages || 1);
+            }
 
         } catch (error) {
             toast.error("Failed to fetch tasks");
             console.error(error);
         } finally {
             setLoading(false);
+            setLoadMoreLoading(false);
         }
     }, [filter, location.search]);
 
@@ -70,8 +88,17 @@ const Tasks = ({ filter = "all" }) => {
 
     useEffect(() => {
         setSelectedTaskIds([]);
-        fetchTasks();
+        setPage(1);
+        fetchTasks(1, false);
     }, [fetchTasks]);
+
+    const handleLoadMore = () => {
+        if (page < totalPages) {
+            const nextPage = page + 1;
+            setPage(nextPage);
+            fetchTasks(nextPage, true);
+        }
+    };
 
     useEffect(() => {
         const handleRefresh = () => fetchTasks();
@@ -385,6 +412,18 @@ const Tasks = ({ filter = "all" }) => {
                 </div>
             ) : (
                 <EmptyState />
+            )}
+
+            {page < totalPages && (
+                <div className="mt-8 flex justify-center">
+                    <button
+                        onClick={handleLoadMore}
+                        disabled={loadMoreLoading}
+                        className="px-6 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-slate-50 dark:hover:bg-slate-800 transition shadow-sm disabled:opacity-50"
+                    >
+                        {loadMoreLoading ? "Loading..." : "Load More Tasks"}
+                    </button>
+                </div>
             )}
 
             <TaskModal

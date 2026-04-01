@@ -109,6 +109,7 @@ const MentorNavigator = () => (
       <Route path="/students" element={<StudentList />} />
       <Route path="/calendar" element={<CalendarView />} />
       <Route path="/tasks" element={<Tasks />} />
+      <Route path="/my-tasks" element={<Tasks filter="assigned_to_me" />} />
       <Route path="/board" element={<Kanban />} />
       <Route path="/report" element={<ProductivityReport />} />
       <Route path="/settings" element={<Settings />} />
@@ -132,6 +133,7 @@ const AdminNavigator = () => (
       <Route path="/mentors/:id" element={<MentorProfile />} />
       <Route path="/calendar" element={<CalendarView />} />
       <Route path="/system-tasks" element={<TaskManagement />} />
+      <Route path="/my-tasks" element={<Tasks filter="assigned_to_me" />} />
       <Route path="/assigned-tasks" element={<AssignedTasks />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/report" element={<ProductivityReport />} />

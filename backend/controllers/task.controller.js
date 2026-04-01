@@ -182,6 +182,12 @@ exports.getTasks = async (req, res) => {
     if (filter === "assigned_by_me") {
         // OVERRIDE the query to show ALL tasks I assigned, regardless of assignee
         query = { assignedByUserId: req.user.id };
+    } else if (filter === "assigned_to_me") {
+        // Tasks assigned TO the current user BY an admin
+        query = { 
+            $or: [{ assignedToUserId: userId }, { assignedTo: userId }],
+            createdByRole: 'admin' 
+        };
     } else if (filter === "completed") {
       query.completed = true;
     } else if (filter === "important") {
@@ -196,9 +202,10 @@ exports.getTasks = async (req, res) => {
 
     // Use lean() for read-only data (30% faster)
     const tasks = await Task.find(query)
-      .populate("assignedByUserId", "name email avatar")
-      .populate("assignedToUserId", "name email avatar")
-      .populate("assignedTo", "name email avatar") // Populate both for compatibility
+      .populate("assignedByUserId", "name email avatar role")
+      .populate("assignedToUserId", "name email avatar role")
+      .populate("assignedTo", "name email avatar role") // Populate both for compatibility
+      .select("title description dueDate priority status completed tags subtasks createdBy assignedTo assignedToUserId assignedByUserId createdAt pinned category taskType")
       .sort({ createdAt: -1 })
       .limit(parseInt(limit))
       .skip(skip)

@@ -45,6 +45,7 @@ const Sidebar = ({ isMobile, onCollapse }) => {
                         label: "OVERVIEW",
                         items: [
                             { name: "Dashboard", icon: LayoutDashboard, path: "/" },
+                            { name: "My Task", icon: ClipboardCheck, path: "/my-tasks" },
                             { name: "Messages", icon: MessageSquare, path: "/messages" },
                         ]
                     },
@@ -73,6 +74,7 @@ const Sidebar = ({ isMobile, onCollapse }) => {
                         label: "OVERVIEW",
                         items: [
                             { name: "Admin Dashboard", icon: LayoutDashboard, path: "/" },
+                            { name: "My Task", icon: ClipboardCheck, path: "/my-tasks" },
                             { name: "Messages", icon: MessageSquare, path: "/messages" },
                         ]
                     },
