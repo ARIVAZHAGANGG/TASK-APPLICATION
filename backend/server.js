@@ -96,9 +96,19 @@ const io = new Server(server, {
   }
 });
 
+const onlineUsers = new Map(); // Map<userId, count>
+
 // Socket.io Connection Handler
 io.on('connection', (socket) => {
-  console.log('User connected:', socket.id);
+  const userId = socket.handshake.query.userId;
+  
+  if (userId) {
+    const count = onlineUsers.get(userId) || 0;
+    onlineUsers.set(userId, count + 1);
+    io.emit('online_users', Array.from(onlineUsers.keys()));
+  }
+
+  console.log('User connected:', socket.id, 'UserId:', userId);
 
   socket.on('join_task', (taskId) => {
     socket.join(taskId);
@@ -110,13 +120,22 @@ io.on('connection', (socket) => {
   });
 
   // Direct Messaging Socket Events
-  socket.on('join_chat', (userId) => {
-    socket.join(userId);
-    console.log(`User ${socket.id} joined personal chat room: ${userId}`);
+  socket.on('join_chat', (chatId) => {
+    socket.join(chatId);
+    console.log(`User ${socket.id} joined personal chat room: ${chatId}`);
   });
 
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
+    if (userId) {
+      const count = onlineUsers.get(userId);
+      if (count > 1) {
+        onlineUsers.set(userId, count - 1);
+      } else {
+        onlineUsers.delete(userId);
+        io.emit('online_users', Array.from(onlineUsers.keys()));
+      }
+    }
   });
 });
 

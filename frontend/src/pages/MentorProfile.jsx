@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { cn } from "../utils/cn";
 import api from "../services/api";
+import { useOnlineUsers } from "../context/SocketContext";
 
 const MentorProfile = () => {
     const { id } = useParams();
@@ -19,6 +20,7 @@ const MentorProfile = () => {
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("tasks");
+    const onlineUsersList = useOnlineUsers() || [];
 
     // Edit modal state
     const [isEditing, setIsEditing] = useState(false);
@@ -142,9 +144,15 @@ const MentorProfile = () => {
                                 <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
                                     {mentor.name}
                                 </h1>
-                                <span className="self-center px-2.5 py-0.5 bg-emerald-50 text-emerald-600 rounded-full text-[9px] font-black uppercase tracking-widest border border-emerald-100 dark:bg-emerald-900/10 dark:border-emerald-800">
-                                    Active
-                                </span>
+                                {onlineUsersList.includes(mentor.id || mentor._id) ? (
+                                    <span className="self-center px-2.5 py-0.5 bg-emerald-50 text-emerald-600 rounded-full text-[9px] font-black uppercase tracking-widest border border-emerald-100 dark:bg-emerald-900/10 dark:border-emerald-800">
+                                        Active
+                                    </span>
+                                ) : (
+                                    <span className="self-center px-2.5 py-0.5 bg-slate-50 text-slate-500 rounded-full text-[9px] font-black uppercase tracking-widest border border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700">
+                                        Offline
+                                    </span>
+                                )}
                             </div>
                             <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-4">Verified Mentor</p>
 

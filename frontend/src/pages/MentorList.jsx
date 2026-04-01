@@ -3,6 +3,7 @@ import { Search, Loader2, User as UserIcon, Send, Mail, Award, BookOpen, MoreVer
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { toast } from "sonner";
+import { useOnlineUsers } from "../context/SocketContext";
 import { cn } from "../utils/cn";
 import { motion } from "framer-motion";
 
@@ -10,6 +11,7 @@ const MentorList = () => {
     const [mentors, setMentors] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
+    const onlineUsersList = useOnlineUsers() || [];
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -91,9 +93,15 @@ const MentorList = () => {
                                         <p className="text-[9px] sm:text-[10px] font-black uppercase text-slate-400 tracking-widest mt-0.5">Verified Mentor</p>
                                     </div>
                                 </div>
-                                <div className="px-2 py-0.5 sm:px-3 sm:py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[9px] sm:text-[10px] font-black uppercase tracking-widest border border-emerald-100 dark:bg-emerald-900/10 dark:border-emerald-800">
-                                    Active
-                                </div>
+                                {onlineUsersList.includes(mentor.id || mentor._id) ? (
+                                    <div className="px-2 py-0.5 sm:px-3 sm:py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[9px] sm:text-[10px] font-black uppercase tracking-widest border border-emerald-100 dark:bg-emerald-900/10 dark:border-emerald-800">
+                                        Active
+                                    </div>
+                                ) : (
+                                    <div className="px-2 py-0.5 sm:px-3 sm:py-1 bg-slate-50 text-slate-500 rounded-lg text-[9px] sm:text-[10px] font-black uppercase tracking-widest border border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700">
+                                        Offline
+                                    </div>
+                                )}
                             </div>
 
                             <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
