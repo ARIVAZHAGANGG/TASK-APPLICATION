@@ -175,6 +175,29 @@ exports.updateStudentDepartment = async (req, res) => {
   }
 };
 
+exports.updateStaffDepartment = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { department } = req.body;
+
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: "Only central admin can modify staff departments" });
+    }
+
+    const staff = await User.findByIdAndUpdate(
+      id, 
+      { $set: { department } }, 
+      { new: true, runValidators: false }
+    );
+    
+    if (!staff) return res.status(404).json({ message: "Staff not found" });
+
+    res.json({ message: "Staff department updated successfully", department: staff.department });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 exports.getAllTasks = async (req, res) => {
   try {
     const tasks = await Task.find()

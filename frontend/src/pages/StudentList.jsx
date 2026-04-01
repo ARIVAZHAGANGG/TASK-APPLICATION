@@ -104,29 +104,25 @@ const StudentList = () => {
                              <div className="h-full bg-primary-500" style={{ width: `${Math.min(student.productivityScore || student.calculatedProductivityScore || 0, 100)}%` }} />
                          </div>
 
-                        <div className="p-5 sm:p-8">
-                            <div className="flex items-start justify-between relative z-10 mb-4 sm:mb-6">
-                                <div className="flex items-center gap-3 sm:gap-4">
-                                    <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-[18px] sm:rounded-[24px] bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:text-primary-500 transition-colors border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden">
+                        <div className="p-4 sm:p-5">
+                            <div className="flex items-start justify-between relative z-10 mb-4 sm:mb-6 gap-2 w-full overflow-hidden">
+                                <div className="flex items-center gap-3 flex-1 min-w-0">
+                                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] sm:rounded-[20px] bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:text-primary-500 transition-colors border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden flex-shrink-0">
                                         {student.avatar ? (
                                             <img src={student.avatar} alt={student.name} className="w-full h-full object-cover" />
                                         ) : (
-                                            <UserIcon size={24} className="sm:size-7" />
+                                            <UserIcon size={24} className="sm:size-6" />
                                         )}
                                     </div>
-                                    <div className="min-w-0">
-                                        <h3 className="font-black text-slate-900 dark:text-white uppercase text-xs sm:text-sm tracking-tight truncate">{student.name}</h3>
+                                    <div className="min-w-0 flex-1">
+                                        <h3 className="font-black text-slate-900 dark:text-white uppercase text-xs sm:text-sm tracking-tight whitespace-normal line-clamp-2 pr-1" title={student.name}>{student.name}</h3>
                                         <p className="text-[9px] sm:text-[10px] font-black uppercase text-slate-400 tracking-widest mt-0.5">Verified Student</p>
                                     </div>
                                 </div>
                                 {onlineUsersList.includes(student.id || student._id) ? (
-                                    <div className="px-2 py-0.5 sm:px-3 sm:py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[9px] sm:text-[10px] font-black uppercase tracking-widest border border-emerald-100 dark:bg-emerald-900/10 dark:border-emerald-800">
-                                        Active
-                                    </div>
+                                    <div className="flex-shrink-0 w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.6)] border-2 border-white dark:border-slate-900" title="Online"></div>
                                 ) : (
-                                    <div className="px-2 py-0.5 sm:px-3 sm:py-1 bg-slate-50 text-slate-500 rounded-lg text-[9px] sm:text-[10px] font-black uppercase tracking-widest border border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700">
-                                        Offline
-                                    </div>
+                                    <div className="flex-shrink-0 w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.4)] border-2 border-white dark:border-slate-900" title="Offline"></div>
                                 )}
                             </div>
 
