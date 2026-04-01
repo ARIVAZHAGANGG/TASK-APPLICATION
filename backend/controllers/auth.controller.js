@@ -76,6 +76,15 @@ exports.login = async (req, res) => {
     console.log(`🔹 Auth: Login Attempt for: [${email}]`);
     console.log(`🔹 Auth: Password provided length: ${password?.length || 0}`);
 
+    /* ---- EMAIL DOMAIN RESTRICTION ---- */
+    const ADMIN_EMAIL  = "admin@bitsathy.ac.in";
+    const MENTOR_EMAIL = "sakthi.@bitsathy.ac.in";
+    const COLLEGE_DOMAIN = "@bitsathy.ac.in";
+    if (!email || !email.endsWith(COLLEGE_DOMAIN)) {
+      return res.status(403).json({ message: "Access restricted. Use your college email ID." });
+    }
+    /* ---------------------------------- */
+
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -224,6 +233,13 @@ exports.googleLogin = async (req, res) => {
     console.log("🔹 Google API Response:", googleRes.data);
 
     const { name, email, picture } = googleRes.data;
+
+    /* ---- EMAIL DOMAIN RESTRICTION (Google Login) ---- */
+    const COLLEGE_DOMAIN = "@bitsathy.ac.in";
+    if (!email || !email.endsWith(COLLEGE_DOMAIN)) {
+      return res.status(403).json({ message: "Access restricted. Use your college email ID." });
+    }
+    /* ------------------------------------------------- */
 
     let user = await User.findOne({ email });
 
