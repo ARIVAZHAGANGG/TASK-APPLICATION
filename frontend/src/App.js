@@ -133,7 +133,6 @@ const AdminNavigator = () => (
       <Route path="/mentors/:id" element={<MentorProfile />} />
       <Route path="/calendar" element={<CalendarView />} />
       <Route path="/system-tasks" element={<TaskManagement />} />
-      <Route path="/my-tasks" element={<Tasks filter="assigned_to_me" />} />
       <Route path="/assigned-tasks" element={<AssignedTasks />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/report" element={<ProductivityReport />} />
