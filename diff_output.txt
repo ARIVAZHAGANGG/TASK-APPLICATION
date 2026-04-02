@@ -1,0 +1,446 @@
+diff --git a/backend/controllers/admin.controller.js b/backend/controllers/admin.controller.js
+index 582d5ed..3d996f0 100644
+--- a/backend/controllers/admin.controller.js
++++ b/backend/controllers/admin.controller.js
+@@ -175,6 +175,29 @@ exports.updateStudentDepartment = async (req, res) => {
+   }
+ };
+ 
++exports.updateStaffDepartment = async (req, res) => {
++  try {
++    const { id } = req.params;
++    const { department } = req.body;
++
++    if (req.user.role !== 'admin') {
++      return res.status(403).json({ message: "Only central admin can modify staff departments" });
++    }
++
++    const staff = await User.findByIdAndUpdate(
++      id, 
++      { $set: { department } }, 
++      { new: true, runValidators: false }
++    );
++    
++    if (!staff) return res.status(404).json({ message: "Staff not found" });
++
++    res.json({ message: "Staff department updated successfully", department: staff.department });
++  } catch (error) {
++    res.status(500).json({ message: error.message });
++  }
++};
++
+ exports.getAllTasks = async (req, res) => {
+   try {
+     const tasks = await Task.find()
+diff --git a/backend/controllers/gamification.controller.js b/backend/controllers/gamification.controller.js
+index 369b8d5..eca9391 100644
+--- a/backend/controllers/gamification.controller.js
++++ b/backend/controllers/gamification.controller.js
+@@ -316,10 +316,11 @@ exports.downloadReport = async (req, res) => {
+ 
+         // ── Helpers ────────────────────────────────────────────────────────────
+         function sectionHeader(title) {
+-            doc.rect(L, doc.y, contentW, 22).fill('#1e293b');
++            const startY = doc.y;
++            doc.rect(L, startY, contentW, 22).fill('#1e293b');
+             doc.fillColor('#ffffff').fontSize(10).font('Helvetica-Bold')
+-               .text(title, L + 10, doc.y - 18, { width: contentW - 20 });
+-            doc.moveDown(1.5);
++               .text(title, L + 10, startY + 6, { width: contentW - 20 });
++            doc.y = startY + 30;
+             doc.fillColor('#334155').font('Helvetica').fontSize(10);
+         }
+ 
+@@ -439,12 +440,13 @@ exports.downloadReport = async (req, res) => {
+         var tHdrs = ['Metric', 'Target', 'Achieved', '% of Target'];
+ 
+         // Header row
+-        doc.rect(L, doc.y, contentW, 20).fill('#1e3a8a');
++        const tHdrY = doc.y;
++        doc.rect(L, tHdrY, contentW, 20).fill('#1e3a8a');
+         tHdrs.forEach(function(h, i) {
+             doc.fillColor('#ffffff').fontSize(9).font('Helvetica-Bold')
+-               .text(h, colX[i] + 4, doc.y - 17, { width: colW[i] - 8, align: i===0?'left':'center' });
++               .text(h, colX[i] + 4, tHdrY + 6, { width: colW[i] - 8, align: i===0?'left':'center', lineBreak: false });
+         });
+-        doc.moveDown(1.2);
++        doc.y = tHdrY + 26;
+ 
+         tableRows.forEach(function(row, ri) {
+             var rowY = doc.y;
+@@ -453,12 +455,12 @@ exports.downloadReport = async (req, res) => {
+                 var pct = parseFloat(cell);
+                 var clr = (i===3 && !isNaN(pct)) ? (pct>=80?'#16a34a':pct>=50?'#ca8a04':'#dc2626') : '#334155';
+                 doc.fillColor(clr).font(i===0?'Helvetica':'Helvetica-Bold').fontSize(9)
+-                   .text(String(cell), colX[i]+4, rowY, { width: colW[i]-8, align: i===0?'left':'center' });
++                   .text(String(cell), colX[i]+4, rowY + 2, { width: colW[i]-8, align: i===0?'left':'center', lineBreak: false });
+             });
+             [colX[1],colX[2],colX[3]].forEach(function(x) {
+                 doc.moveTo(x, rowY-2).lineTo(x, rowY+16).lineWidth(0.3).stroke('#cbd5e1');
+             });
+-            doc.moveDown(0.75);
++            doc.y = rowY + 18;
+         });
+ 
+         doc.moveTo(L, doc.y).lineTo(R, doc.y).lineWidth(0.5).stroke('#cbd5e1');
+@@ -477,12 +479,13 @@ exports.downloadReport = async (req, res) => {
+             var tHdrNames = ['Task Name','Assigned By','Assigned To','Assigned Date','Completion','Status'];
+ 
+             // Mini header row
+-            doc.rect(L, doc.y, contentW, 16).fill('#e2e8f0');
++            const hdrY = doc.y;
++            doc.rect(L, hdrY, contentW, 16).fill('#e2e8f0');
+             tHdrNames.forEach(function(h, i) {
+                 doc.fillColor('#475569').fontSize(7.5).font('Helvetica-Bold')
+-                   .text(h, tcX[i]+3, doc.y-13, { width: tcW[i]-6 });
++                   .text(h, tcX[i]+3, hdrY + 4, { width: tcW[i]-6, lineBreak: false });
+             });
+-            doc.moveDown(0.8);
++            doc.y = hdrY + 20;
+ 
+             recentTasks.forEach(function(task, ri) {
+                 var rowY = doc.y;
+@@ -506,11 +509,13 @@ exports.downloadReport = async (req, res) => {
+                     { t: status,          c: statusClr, f:'Helvetica-Bold' },
+                 ];
+ 
++                let maxBottomY = rowY + 20;
+                 cells.forEach(function(d,i) {
+                     doc.fillColor(d.c).font(d.f).fontSize(8)
+-                       .text(String(d.t), tcX[i]+3, rowY+2, { width: tcW[i]-6 });
++                       .text(String(d.t), tcX[i]+3, rowY+4, { width: tcW[i]-6 });
++                    if (doc.y > maxBottomY) maxBottomY = doc.y;
+                 });
+-                doc.moveDown(1.1);
++                doc.y = maxBottomY + 4;
+             });
+         } else {
+             doc.fillColor('#94a3b8').font('Helvetica').fontSize(10)
+diff --git a/backend/routes/admin.routes.js b/backend/routes/admin.routes.js
+index 8b4b08a..fff558e 100644
+--- a/backend/routes/admin.routes.js
++++ b/backend/routes/admin.routes.js
+@@ -8,5 +8,6 @@ router.get("/students", auth, roleMiddleware("admin", "mentor"), (req, res) => a
+ router.get("/tasks", auth, roleMiddleware("admin"), (req, res) => adminController.getAllTasks(req, res));
+ router.get("/activity", auth, roleMiddleware("admin"), (req, res) => adminController.getStaffActivity(req, res));
+ router.put("/students/:id/department", auth, roleMiddleware("admin", "mentor"), (req, res) => adminController.updateStudentDepartment(req, res));
++router.put("/staff/:id/department", auth, roleMiddleware("admin"), (req, res) => adminController.updateStaffDepartment(req, res));
+ 
+ module.exports = router;
+diff --git a/frontend/src/assets/bannari_logo.png b/frontend/src/assets/bannari_logo.png
+deleted file mode 100644
+index 0530930..0000000
+Binary files a/frontend/src/assets/bannari_logo.png and /dev/null differ
+diff --git a/frontend/src/components/Sidebar.jsx b/frontend/src/components/Sidebar.jsx
+index 8d91fa9..54396f7 100644
+--- a/frontend/src/components/Sidebar.jsx
++++ b/frontend/src/components/Sidebar.jsx
+@@ -74,14 +74,12 @@ const Sidebar = ({ isMobile, onCollapse }) => {
+                         label: "OVERVIEW",
+                         items: [
+                             { name: "Admin Dashboard", icon: LayoutDashboard, path: "/" },
+-                            { name: "My Task", icon: ClipboardCheck, path: "/my-tasks" },
+                             { name: "Messages", icon: MessageSquare, path: "/messages" },
+                         ]
+                     },
+                     {
+                         label: "USER CONTROL",
+                         items: [
+-                            { name: "User Management", icon: Users, path: "/users" },
+                             { name: "Mentor Registry", icon: UserCheck, path: "/mentors" },
+                         ]
+                     },
+diff --git a/frontend/src/pages/AdminDashboard.jsx b/frontend/src/pages/AdminDashboard.jsx
+index ff40585..4e71f98 100644
+--- a/frontend/src/pages/AdminDashboard.jsx
++++ b/frontend/src/pages/AdminDashboard.jsx
+@@ -81,7 +81,7 @@ const AdminDashboard = () => {
+                             </div>
+                         </div>
+ 
+-                        <div className="flex items-center gap-3 sm:gap-4 h-12 sm:h-auto">
++                        <div className="flex items-center gap-3 sm:gap-4 mt-2 sm:mt-0">
+                             <div 
+                                 ref={calendarBtnRef}
+                                 onClick={() => {
+@@ -89,20 +89,17 @@ const AdminDashboard = () => {
+                                     setCalendarAnchor(rect);
+                                     setIsCalendarOpen(true);
+                                 }}
+-                                className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-400 via-indigo-500 to-purple-600 rounded-xl sm:rounded-2xl flex items-center justify-center text-white shadow-2xl transform hover:scale-110 transition-all cursor-pointer group/cal border border-white/30"
++                                className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-blue-400 via-indigo-500 to-purple-600 rounded-xl sm:rounded-2xl flex items-center justify-center text-white shadow-2xl transform hover:scale-105 transition-all cursor-pointer border border-white/30 shrink-0"
+                             >
+-                                <Calendar size={24} className="sm:hidden" />
+-                                <Calendar size={28} className="hidden sm:block" />
++                                <Calendar size={20} className="sm:hidden" />
++                                <Calendar size={24} className="hidden sm:block" />
+                             </div>
+                             
+-                            <button className="flex-1 sm:flex-none p-3 sm:p-4 bg-white/10 backdrop-blur-xl border border-white/30 rounded-xl sm:rounded-2xl text-white hover:bg-white/20 transition-all shadow-2xl flex items-center justify-center">
+-                                <Search size={24} />
+-                            </button>
+                             <button 
+                                 onClick={() => navigate("/report")}
+-                                className="flex-[2] sm:flex-none px-6 sm:px-8 py-3 sm:py-4 bg-white text-slate-900 font-black rounded-xl sm:rounded-2xl shadow-2xl hover:bg-slate-100 transition-all transform active:scale-95 uppercase text-[10px] sm:text-xs tracking-widest h-full sm:h-auto"
++                                className="px-6 py-3 sm:px-8 sm:py-4 bg-white text-slate-900 font-black rounded-xl sm:rounded-2xl shadow-2xl hover:bg-slate-100 transition-all transform active:scale-95 uppercase text-[10px] sm:text-xs tracking-widest shrink-0"
+                             >
+-                                Report
++                                Get Report
+                             </button>
+                         </div>
+                     </div>
+diff --git a/frontend/src/pages/MentorList.jsx b/frontend/src/pages/MentorList.jsx
+index 175b955..551cf90 100644
+--- a/frontend/src/pages/MentorList.jsx
++++ b/frontend/src/pages/MentorList.jsx
+@@ -5,15 +5,41 @@ import api from "../services/api";
+ import { toast } from "sonner";
+ import { useOnlineUsers } from "../context/SocketContext";
+ import { cn } from "../utils/cn";
+-import { motion } from "framer-motion";
++import { motion, AnimatePresence } from "framer-motion";
+ 
+ const MentorList = () => {
+     const [mentors, setMentors] = useState([]);
+     const [loading, setLoading] = useState(true);
+     const [searchTerm, setSearchTerm] = useState("");
++    const [editingMentor, setEditingMentor] = useState(null);
++    const [departmentInput, setDepartmentInput] = useState("");
++    const [submitting, setSubmitting] = useState(false);
+     const onlineUsersList = useOnlineUsers() || [];
+     const navigate = useNavigate();
+ 
++    const openEditModal = (mentor) => {
++        setEditingMentor(mentor);
++        setDepartmentInput(mentor.department || "");
++    };
++
++    const handleUpdateDepartment = async (e) => {
++        if (e) e.preventDefault();
++        setSubmitting(true);
++        try {
++            await api.put(`/admin/staff/${editingMentor._id || editingMentor.id}/department`, { department: departmentInput });
++            toast.success("Mentor department updated successfully");
++            setEditingMentor(null);
++            
++            const res = await api.get("/admin/staff");
++            const mentorUsers = res.data.filter(user => user.role === 'mentor');
++            setMentors(mentorUsers);
++        } catch (error) {
++            toast.error(error.response?.data?.message || "Failed to update department");
++        } finally {
++            setSubmitting(false);
++        }
++    };
++
+     useEffect(() => {
+         const fetchMentors = async () => {
+             try {
+@@ -78,29 +104,25 @@ const MentorList = () => {
+                              <div className="h-full bg-primary-500 w-[75%]" />
+                         </div>
+ 
+-                        <div className="p-5 sm:p-8">
+-                            <div className="flex items-start justify-between relative z-10 mb-4 sm:mb-6">
+-                                <div className="flex items-center gap-3 sm:gap-4">
+-                                    <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-[18px] sm:rounded-[24px] bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:text-primary-500 transition-colors border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden">
++                        <div className="p-4 sm:p-5">
++                            <div className="flex items-start justify-between relative z-10 mb-4 sm:mb-6 gap-2 w-full overflow-hidden">
++                                <div className="flex items-center gap-3 flex-1 min-w-0">
++                                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] sm:rounded-[20px] bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:text-primary-500 transition-colors border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden flex-shrink-0">
+                                         {mentor.avatar ? (
+                                             <img src={mentor.avatar} alt={mentor.name} className="w-full h-full object-cover" />
+                                         ) : (
+-                                            <UserIcon size={24} className="sm:size-7" />
++                                            <UserIcon size={24} className="sm:size-6" />
+                                         )}
+                                     </div>
+-                                    <div className="min-w-0">
+-                                        <h3 className="font-black text-slate-900 dark:text-white uppercase text-xs sm:text-sm tracking-tight truncate">{mentor.name}</h3>
++                                    <div className="min-w-0 flex-1">
++                                        <h3 className="font-black text-slate-900 dark:text-white uppercase text-xs sm:text-sm tracking-tight whitespace-normal line-clamp-2 pr-1" title={mentor.name}>{mentor.name}</h3>
+                                         <p className="text-[9px] sm:text-[10px] font-black uppercase text-slate-400 tracking-widest mt-0.5">Verified Mentor</p>
+                                     </div>
+                                 </div>
+                                 {onlineUsersList.includes(mentor.id || mentor._id) ? (
+-                                    <div className="px-2 py-0.5 sm:px-3 sm:py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[9px] sm:text-[10px] font-black uppercase tracking-widest border border-emerald-100 dark:bg-emerald-900/10 dark:border-emerald-800">
+-                                        Active
+-                                    </div>
++                                    <div className="flex-shrink-0 w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.6)] border-2 border-white dark:border-slate-900" title="Online"></div>
+                                 ) : (
+-                                    <div className="px-2 py-0.5 sm:px-3 sm:py-1 bg-slate-50 text-slate-500 rounded-lg text-[9px] sm:text-[10px] font-black uppercase tracking-widest border border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700">
+-                                        Offline
+-                                    </div>
++                                    <div className="flex-shrink-0 w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.4)] border-2 border-white dark:border-slate-900" title="Offline"></div>
+                                 )}
+                             </div>
+ 
+@@ -118,25 +140,30 @@ const MentorList = () => {
+                                     <span className="text-[11px] sm:text-xs font-bold">Member Since: {new Date(mentor.createdAt).toLocaleDateString()}</span>
+                                 </div>
+                             </div>
+-                            
+-                            <div className="grid grid-cols-3 gap-2">
++                            <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                                 <button 
+                                     onClick={() => navigate(`/mentors/${mentor._id || mentor.id}`)}
+-                                    className="flex items-center justify-center gap-1 py-2.5 sm:py-3 bg-slate-900 dark:bg-slate-800 text-white rounded-xl text-[8px] sm:text-[9px] font-black uppercase tracking-wide hover:bg-primary-600 hover:shadow-lg transition-all"
++                                    className="flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 sm:py-3 bg-slate-900 dark:bg-slate-800 text-white rounded-xl sm:rounded-2xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest hover:bg-primary-600 hover:shadow-lg transition-all"
++                                >
++                                    <Eye size={12} className="sm:size-3.5" /> Profile
++                                </button>
++                                <button 
++                                    onClick={() => navigate(`/messages?userId=${mentor.id || mentor._id}&userName=${encodeURIComponent(mentor.name)}`)}
++                                    className="flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 sm:py-3 bg-blue-600 text-white rounded-xl sm:rounded-2xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20"
+                                 >
+-                                    <Eye size={11} className="sm:size-3" /> Profile
++                                    <MessageSquare size={12} className="sm:size-3.5" /> Chat
+                                 </button>
+                                 <button 
+                                     onClick={() => navigate(`/report?mentorId=${mentor._id}`)}
+-                                    className="flex items-center justify-center gap-1 py-2.5 sm:py-3 bg-slate-700 dark:bg-slate-700 text-white rounded-xl text-[8px] sm:text-[9px] font-black uppercase tracking-wide hover:bg-slate-600 transition-all"
++                                    className="flex items-center justify-center gap-1.5 sm:gap-2 py-2 sm:py-2.5 bg-slate-700 dark:bg-slate-700 text-white rounded-lg sm:rounded-xl text-[8px] sm:text-[9px] font-black uppercase tracking-widest hover:bg-slate-600 transition-all"
+                                 >
+                                     <BookOpen size={11} className="sm:size-3" /> Stats
+                                 </button>
+                                 <button 
+-                                    onClick={() => navigate(`/messages?userId=${mentor.id || mentor._id}&userName=${encodeURIComponent(mentor.name)}`)}
+-                                    className="flex items-center justify-center gap-1 py-2.5 sm:py-3 bg-blue-600 text-white rounded-xl text-[8px] sm:text-[9px] font-black uppercase tracking-wide hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20"
++                                    onClick={() => openEditModal(mentor)} 
++                                    className="flex items-center justify-center gap-1.5 sm:gap-2 py-2 sm:py-2.5 bg-amber-50 dark:bg-amber-900/10 text-amber-600 dark:text-amber-500 rounded-lg sm:rounded-xl text-[8px] sm:text-[9px] font-black uppercase tracking-widest hover:bg-amber-100 dark:hover:bg-amber-900/20 transition-all font-bold"
+                                 >
+-                                    <MessageSquare size={11} className="sm:size-3" /> Chat
++                                    <Shield size={11} className="sm:size-3" /> Edit Profile
+                                 </button>
+                             </div>
+                         </div>
+@@ -151,6 +178,66 @@ const MentorList = () => {
+                     </div>
+                 )}
+             </div>
++            {/* Edit Department Modal */}
++            <AnimatePresence>
++                {editingMentor && (
++                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4">
++                        <motion.div 
++                            initial={{ opacity: 0 }} 
++                            animate={{ opacity: 1 }} 
++                            exit={{ opacity: 0 }}
++                            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
++                            onClick={() => !submitting && setEditingMentor(null)}
++                        />
++                        <motion.div 
++                            initial={{ scale: 0.9, opacity: 0 }}
++                            animate={{ scale: 1, opacity: 1 }}
++                            exit={{ scale: 0.9, opacity: 0 }}
++                            className="relative bg-white dark:bg-slate-900 w-full max-w-md rounded-[2rem] shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 p-6 sm:p-8"
++                        >
++                            <div className="mb-6">
++                                <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Edit Profile</h2>
++                                <p className="text-xs sm:text-sm font-medium text-slate-500 mt-1">Configure institutional department.</p>
++                            </div>
++                            
++                            <form onSubmit={handleUpdateDepartment} className="space-y-6">
++                                <div>
++                                    <label className="block text-[10px] sm:text-xs font-black uppercase text-slate-400 tracking-widest mb-2">Department Name</label>
++                                    <div className="relative">
++                                        <BookOpen size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
++                                        <input
++                                            type="text"
++                                            value={departmentInput}
++                                            onChange={(e) => setDepartmentInput(e.target.value)}
++                                            placeholder="e.g. Computer Science"
++                                            className="w-full pl-11 pr-4 py-3 sm:py-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl sm:rounded-2xl text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-primary-500 text-sm sm:text-base transition-all"
++                                            required
++                                        />
++                                    </div>
++                                </div>
++                                <div className="flex gap-3">
++                                    <button
++                                        type="button"
++                                        onClick={() => setEditingMentor(null)}
++                                        disabled={submitting}
++                                        className="flex-1 py-3 sm:py-4 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-black rounded-xl sm:rounded-2xl text-[10px] sm:text-xs uppercase tracking-widest hover:bg-slate-50 dark:hover:bg-slate-800 transition-all font-bold"
++                                    >
++                                        Cancel
++                                    </button>
++                                    <button
++                                        type="submit"
++                                        disabled={submitting}
++                                        className="flex-[2] py-3 sm:py-4 bg-primary-500 text-white font-black rounded-xl sm:rounded-2xl text-[10px] sm:text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-primary-600 transition-all shadow-lg active:scale-95 disabled:opacity-50 font-bold"
++                                    >
++                                        {submitting ? <Loader2 size={16} className="animate-spin" /> : <Shield size={16} />}
++                                        Save Changes
++                                    </button>
++                                </div>
++                            </form>
++                        </motion.div>
++                    </div>
++                )}
++            </AnimatePresence>
+         </div>
+     );
+ };
+diff --git a/frontend/src/pages/MentorProfile.jsx b/frontend/src/pages/MentorProfile.jsx
+index 57868a0..7263c14 100644
+--- a/frontend/src/pages/MentorProfile.jsx
++++ b/frontend/src/pages/MentorProfile.jsx
+@@ -145,13 +145,9 @@ const MentorProfile = () => {
+                                     {mentor.name}
+                                 </h1>
+                                 {onlineUsersList.includes(mentor.id || mentor._id) ? (
+-                                    <span className="self-center px-2.5 py-0.5 bg-emerald-50 text-emerald-600 rounded-full text-[9px] font-black uppercase tracking-widest border border-emerald-100 dark:bg-emerald-900/10 dark:border-emerald-800">
+-                                        Active
+-                                    </span>
++                                    <div className="self-center flex-shrink-0 w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.6)] border-2 border-white dark:border-slate-900" title="Online"></div>
+                                 ) : (
+-                                    <span className="self-center px-2.5 py-0.5 bg-slate-50 text-slate-500 rounded-full text-[9px] font-black uppercase tracking-widest border border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700">
+-                                        Offline
+-                                    </span>
++                                    <div className="self-center flex-shrink-0 w-3 h-3 rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.4)] border-2 border-white dark:border-slate-900" title="Offline"></div>
+                                 )}
+                             </div>
+                             <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-4">Verified Mentor</p>
+diff --git a/frontend/src/pages/StudentList.jsx b/frontend/src/pages/StudentList.jsx
+index cd29e4a..7e7e2e2 100644
+--- a/frontend/src/pages/StudentList.jsx
++++ b/frontend/src/pages/StudentList.jsx
+@@ -104,29 +104,25 @@ const StudentList = () => {
+                              <div className="h-full bg-primary-500" style={{ width: `${Math.min(student.productivityScore || student.calculatedProductivityScore || 0, 100)}%` }} />
+                          </div>
+ 
+-                        <div className="p-5 sm:p-8">
+-                            <div className="flex items-start justify-between relative z-10 mb-4 sm:mb-6">
+-                                <div className="flex items-center gap-3 sm:gap-4">
+-                                    <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-[18px] sm:rounded-[24px] bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:text-primary-500 transition-colors border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden">
++                        <div className="p-4 sm:p-5">
++                            <div className="flex items-start justify-between relative z-10 mb-4 sm:mb-6 gap-2 w-full overflow-hidden">
++                                <div className="flex items-center gap-3 flex-1 min-w-0">
++                                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-[18px] sm:rounded-[20px] bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:text-primary-500 transition-colors border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden flex-shrink-0">
+                                         {student.avatar ? (
+                                             <img src={student.avatar} alt={student.name} className="w-full h-full object-cover" />
+                                         ) : (
+-                                            <UserIcon size={24} className="sm:size-7" />
++                                            <UserIcon size={24} className="sm:size-6" />
+                                         )}
+                                     </div>
+-                                    <div className="min-w-0">
+-                                        <h3 className="font-black text-slate-900 dark:text-white uppercase text-xs sm:text-sm tracking-tight truncate">{student.name}</h3>
++                                    <div className="min-w-0 flex-1">
++                                        <h3 className="font-black text-slate-900 dark:text-white uppercase text-xs sm:text-sm tracking-tight whitespace-normal line-clamp-2 pr-1" title={student.name}>{student.name}</h3>
+                                         <p className="text-[9px] sm:text-[10px] font-black uppercase text-slate-400 tracking-widest mt-0.5">Verified Student</p>
+                                     </div>
+                                 </div>
+                                 {onlineUsersList.includes(student.id || student._id) ? (
+-                                    <div className="px-2 py-0.5 sm:px-3 sm:py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[9px] sm:text-[10px] font-black uppercase tracking-widest border border-emerald-100 dark:bg-emerald-900/10 dark:border-emerald-800">
+-                                        Active
+-                                    </div>
++                                    <div className="flex-shrink-0 w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.6)] border-2 border-white dark:border-slate-900" title="Online"></div>
+                                 ) : (
+-                                    <div className="px-2 py-0.5 sm:px-3 sm:py-1 bg-slate-50 text-slate-500 rounded-lg text-[9px] sm:text-[10px] font-black uppercase tracking-widest border border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700">
+-                                        Offline
+-                                    </div>
++                                    <div className="flex-shrink-0 w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.4)] border-2 border-white dark:border-slate-900" title="Offline"></div>
+                                 )}
+                             </div>
+ 

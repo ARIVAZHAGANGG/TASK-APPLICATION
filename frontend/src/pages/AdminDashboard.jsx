@@ -1,4 +1,4 @@
-import { Users, LayoutDashboard, ListTodo, CheckCircle, BarChart, Loader2, ArrowUpRight, Search, Calendar } from "lucide-react";
+import { Users, LayoutDashboard, ListTodo, CheckCircle, BarChart, Loader2, ArrowUpRight, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { toast } from "sonner";
@@ -81,7 +81,7 @@ const AdminDashboard = () => {
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-3 sm:gap-4 h-12 sm:h-auto">
+                        <div className="flex items-center gap-3 sm:gap-4 mt-2 sm:mt-0">
                             <div 
                                 ref={calendarBtnRef}
                                 onClick={() => {
@@ -89,20 +89,17 @@ const AdminDashboard = () => {
                                     setCalendarAnchor(rect);
                                     setIsCalendarOpen(true);
                                 }}
-                                className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-400 via-indigo-500 to-purple-600 rounded-xl sm:rounded-2xl flex items-center justify-center text-white shadow-2xl transform hover:scale-110 transition-all cursor-pointer group/cal border border-white/30"
+                                className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-blue-400 via-indigo-500 to-purple-600 rounded-xl sm:rounded-2xl flex items-center justify-center text-white shadow-2xl transform hover:scale-105 transition-all cursor-pointer border border-white/30 shrink-0"
                             >
-                                <Calendar size={24} className="sm:hidden" />
-                                <Calendar size={28} className="hidden sm:block" />
+                                <Calendar size={20} className="sm:hidden" />
+                                <Calendar size={24} className="hidden sm:block" />
                             </div>
                             
-                            <button className="flex-1 sm:flex-none p-3 sm:p-4 bg-white/10 backdrop-blur-xl border border-white/30 rounded-xl sm:rounded-2xl text-white hover:bg-white/20 transition-all shadow-2xl flex items-center justify-center">
-                                <Search size={24} />
-                            </button>
                             <button 
                                 onClick={() => navigate("/report")}
-                                className="flex-[2] sm:flex-none px-6 sm:px-8 py-3 sm:py-4 bg-white text-slate-900 font-black rounded-xl sm:rounded-2xl shadow-2xl hover:bg-slate-100 transition-all transform active:scale-95 uppercase text-[10px] sm:text-xs tracking-widest h-full sm:h-auto"
+                                className="px-6 py-3 sm:px-8 sm:py-4 bg-white text-slate-900 font-black rounded-xl sm:rounded-2xl shadow-2xl hover:bg-slate-100 transition-all transform active:scale-95 uppercase text-[10px] sm:text-xs tracking-widest shrink-0"
                             >
-                                Report
+                                Get Report
                             </button>
                         </div>
                     </div>

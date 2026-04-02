@@ -8,5 +8,6 @@ router.get("/students", auth, roleMiddleware("admin", "mentor"), (req, res) => a
 router.get("/tasks", auth, roleMiddleware("admin"), (req, res) => adminController.getAllTasks(req, res));
 router.get("/activity", auth, roleMiddleware("admin"), (req, res) => adminController.getStaffActivity(req, res));
 router.put("/students/:id/department", auth, roleMiddleware("admin", "mentor"), (req, res) => adminController.updateStudentDepartment(req, res));
+router.put("/staff/:id/department", auth, roleMiddleware("admin"), (req, res) => adminController.updateStaffDepartment(req, res));
 
 module.exports = router;

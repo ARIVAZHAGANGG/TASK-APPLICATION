@@ -145,13 +145,9 @@ const MentorProfile = () => {
                                     {mentor.name}
                                 </h1>
                                 {onlineUsersList.includes(mentor.id || mentor._id) ? (
-                                    <span className="self-center px-2.5 py-0.5 bg-emerald-50 text-emerald-600 rounded-full text-[9px] font-black uppercase tracking-widest border border-emerald-100 dark:bg-emerald-900/10 dark:border-emerald-800">
-                                        Active
-                                    </span>
+                                    <div className="self-center flex-shrink-0 w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.6)] border-2 border-white dark:border-slate-900" title="Online"></div>
                                 ) : (
-                                    <span className="self-center px-2.5 py-0.5 bg-slate-50 text-slate-500 rounded-full text-[9px] font-black uppercase tracking-widest border border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700">
-                                        Offline
-                                    </span>
+                                    <div className="self-center flex-shrink-0 w-3 h-3 rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.4)] border-2 border-white dark:border-slate-900" title="Offline"></div>
                                 )}
                             </div>
                             <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-4">Verified Mentor</p>

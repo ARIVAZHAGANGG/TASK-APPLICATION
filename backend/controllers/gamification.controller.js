@@ -316,10 +316,11 @@ exports.downloadReport = async (req, res) => {
 
         // ── Helpers ────────────────────────────────────────────────────────────
         function sectionHeader(title) {
-            doc.rect(L, doc.y, contentW, 22).fill('#1e293b');
+            const startY = doc.y;
+            doc.rect(L, startY, contentW, 22).fill('#1e293b');
             doc.fillColor('#ffffff').fontSize(10).font('Helvetica-Bold')
-               .text(title, L + 10, doc.y - 18, { width: contentW - 20 });
-            doc.moveDown(1.5);
+               .text(title, L + 10, startY + 6, { width: contentW - 20 });
+            doc.y = startY + 30;
             doc.fillColor('#334155').font('Helvetica').fontSize(10);
         }
 
@@ -439,12 +440,13 @@ exports.downloadReport = async (req, res) => {
         var tHdrs = ['Metric', 'Target', 'Achieved', '% of Target'];
 
         // Header row
-        doc.rect(L, doc.y, contentW, 20).fill('#1e3a8a');
+        const tHdrY = doc.y;
+        doc.rect(L, tHdrY, contentW, 20).fill('#1e3a8a');
         tHdrs.forEach(function(h, i) {
             doc.fillColor('#ffffff').fontSize(9).font('Helvetica-Bold')
-               .text(h, colX[i] + 4, doc.y - 17, { width: colW[i] - 8, align: i===0?'left':'center' });
+               .text(h, colX[i] + 4, tHdrY + 6, { width: colW[i] - 8, align: i===0?'left':'center', lineBreak: false });
         });
-        doc.moveDown(1.2);
+        doc.y = tHdrY + 26;
 
         tableRows.forEach(function(row, ri) {
             var rowY = doc.y;
@@ -453,12 +455,12 @@ exports.downloadReport = async (req, res) => {
                 var pct = parseFloat(cell);
                 var clr = (i===3 && !isNaN(pct)) ? (pct>=80?'#16a34a':pct>=50?'#ca8a04':'#dc2626') : '#334155';
                 doc.fillColor(clr).font(i===0?'Helvetica':'Helvetica-Bold').fontSize(9)
-                   .text(String(cell), colX[i]+4, rowY, { width: colW[i]-8, align: i===0?'left':'center' });
+                   .text(String(cell), colX[i]+4, rowY + 2, { width: colW[i]-8, align: i===0?'left':'center', lineBreak: false });
             });
             [colX[1],colX[2],colX[3]].forEach(function(x) {
                 doc.moveTo(x, rowY-2).lineTo(x, rowY+16).lineWidth(0.3).stroke('#cbd5e1');
             });
-            doc.moveDown(0.75);
+            doc.y = rowY + 18;
         });
 
         doc.moveTo(L, doc.y).lineTo(R, doc.y).lineWidth(0.5).stroke('#cbd5e1');
@@ -477,12 +479,13 @@ exports.downloadReport = async (req, res) => {
             var tHdrNames = ['Task Name','Assigned By','Assigned To','Assigned Date','Completion','Status'];
 
             // Mini header row
-            doc.rect(L, doc.y, contentW, 16).fill('#e2e8f0');
+            const hdrY = doc.y;
+            doc.rect(L, hdrY, contentW, 16).fill('#e2e8f0');
             tHdrNames.forEach(function(h, i) {
                 doc.fillColor('#475569').fontSize(7.5).font('Helvetica-Bold')
-                   .text(h, tcX[i]+3, doc.y-13, { width: tcW[i]-6 });
+                   .text(h, tcX[i]+3, hdrY + 4, { width: tcW[i]-6, lineBreak: false });
             });
-            doc.moveDown(0.8);
+            doc.y = hdrY + 20;
 
             recentTasks.forEach(function(task, ri) {
                 var rowY = doc.y;
@@ -506,11 +509,13 @@ exports.downloadReport = async (req, res) => {
                     { t: status,          c: statusClr, f:'Helvetica-Bold' },
                 ];
 
+                let maxBottomY = rowY + 20;
                 cells.forEach(function(d,i) {
                     doc.fillColor(d.c).font(d.f).fontSize(8)
-                       .text(String(d.t), tcX[i]+3, rowY+2, { width: tcW[i]-6 });
+                       .text(String(d.t), tcX[i]+3, rowY+4, { width: tcW[i]-6 });
+                    if (doc.y > maxBottomY) maxBottomY = doc.y;
                 });
-                doc.moveDown(1.1);
+                doc.y = maxBottomY + 4;
             });
         } else {
             doc.fillColor('#94a3b8').font('Helvetica').fontSize(10)

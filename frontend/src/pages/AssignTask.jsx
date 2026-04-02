@@ -192,13 +192,9 @@ const AssignTask = () => {
             try {
                 let data = [];
                 if (isAdmin) {
-                    const [staffRes, studentRes] = await Promise.all([
-                        api.get("/admin/staff"),
-                        api.get("/admin/students")
-                    ]);
+                    const staffRes = await api.get("/admin/staff");
                     const mentors = (staffRes.data || []).filter(u => u.role === 'mentor');
-                    const students = studentRes.data || [];
-                    data = [...mentors, ...students];
+                    data = mentors;
                 } else if (isMentor) {
                     const res = await api.get("/admin/students");
                     data = res.data || [];

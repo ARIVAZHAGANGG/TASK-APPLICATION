@@ -74,14 +74,12 @@ const Sidebar = ({ isMobile, onCollapse }) => {
                         label: "OVERVIEW",
                         items: [
                             { name: "Admin Dashboard", icon: LayoutDashboard, path: "/" },
-                            { name: "My Task", icon: ClipboardCheck, path: "/my-tasks" },
                             { name: "Messages", icon: MessageSquare, path: "/messages" },
                         ]
                     },
                     {
                         label: "USER CONTROL",
                         items: [
-                            { name: "User Management", icon: Users, path: "/users" },
                             { name: "Mentor Registry", icon: UserCheck, path: "/mentors" },
                         ]
                     },
