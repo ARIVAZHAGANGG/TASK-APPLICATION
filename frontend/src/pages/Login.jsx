@@ -99,14 +99,23 @@ const Login = () => {
     });
 
     return (
-        <div className="min-h-screen w-full flex flex-col md:flex-row font-['Nunito'] overflow-hidden bg-white">
+        <div className="min-h-screen w-full flex flex-col md:flex-row font-['Nunito'] overflow-hidden relative">
+            
+            {/* S-Curve Divider (Desktop Only) */}
+            <div className="absolute inset-y-0 left-[35%] w-[30%] hidden md:block z-10 pointer-events-none">
+                <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <path d="M50,0 C-10,30 110,70 50,100 L0,100 L0,0 Z" fill="#b5e5e0" />
+                    <path d="M50,0 C-10,30 110,70 50,100 L100,100 L100,0 Z" fill="#ffffff" />
+                </svg>
+            </div>
+
             {/* Left Side: Illustration */}
-            <div className="w-full md:w-1/2 bg-[#b5e5e0] flex items-center justify-center p-4 sm:p-8 md:p-12 relative min-h-[250px] md:min-h-0">
+            <div className="w-full md:w-1/2 bg-[#b5e5e0] flex items-center justify-center p-4 sm:p-8 md:p-12 relative min-h-[300px] md:min-h-0 z-0">
                 <motion.div 
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 1 }}
-                    className="w-full flex justify-center"
+                    className="w-full flex justify-center md:-translate-x-8 lg:-translate-x-12 scale-95"
                 >
                     <img 
                         src={loginIllustration} 
@@ -117,21 +126,7 @@ const Login = () => {
             </div>
 
             {/* Right Side: Form */}
-            <div className="w-full md:w-1/2 p-6 sm:p-8 md:p-16 flex flex-col justify-center bg-white relative z-10 md:shadow-[-20px_0_40px_rgba(0,0,0,0.02)]">
-                
-                {/* Desktop Vertical Wave Divider */}
-                <div className="hidden md:block absolute top-0 -left-[140px] w-[141px] h-full text-white pointer-events-none drop-shadow-[-10px_0_15px_rgba(0,0,0,0.03)] focus:border-0 outline-none">
-                    <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full" fill="currentColor">
-                        <path d="M 100,0 C 100,30 0,30 0,50 C 0,70 100,70 100,100 Z" />
-                    </svg>
-                </div>
-
-                {/* Mobile Horizontal Wave Divider */}
-                <div className="md:hidden absolute -top-[50px] left-0 w-full h-[51px] text-white pointer-events-none drop-shadow-[0_-10px_15px_rgba(0,0,0,0.03)] focus:border-0 outline-none">
-                    <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full" fill="currentColor">
-                        <path d="M 0,100 C 30,100 30,0 50,0 C 70,0 70,100 100,100 Z" />
-                    </svg>
-                </div>
+            <div className="w-full md:w-1/2 p-6 sm:p-8 md:p-16 flex flex-col justify-center bg-white relative z-0 md:rounded-none rounded-t-[40px] -mt-10 md:mt-0">
                 <motion.div 
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
