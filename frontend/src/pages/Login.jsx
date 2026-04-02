@@ -99,9 +99,9 @@ const Login = () => {
     });
 
     return (
-        <div className="min-h-screen w-full flex flex-col md:flex-row font-['Nunito'] overflow-hidden bg-[#b5e5e0]">
+        <div className="min-h-screen w-full flex flex-col md:flex-row font-['Nunito'] overflow-hidden bg-white">
             {/* Left Side: Illustration */}
-            <div className="w-full md:w-1/2 flex items-center justify-center p-4 sm:p-8 md:p-12 relative min-h-[250px] md:min-h-0">
+            <div className="w-full md:w-1/2 bg-[#b5e5e0] flex items-center justify-center p-4 sm:p-8 md:p-12 relative min-h-[250px] md:min-h-0">
                 <motion.div 
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -117,7 +117,21 @@ const Login = () => {
             </div>
 
             {/* Right Side: Form */}
-            <div className="w-full md:w-1/2 p-6 sm:p-8 md:p-16 flex flex-col justify-center bg-white relative rounded-t-[40px] md:rounded-tr-none md:rounded-l-[80px] z-10 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] md:shadow-[-20px_0_40px_rgba(0,0,0,0.05)]">
+            <div className="w-full md:w-1/2 p-6 sm:p-8 md:p-16 flex flex-col justify-center bg-white relative z-10 md:shadow-[-20px_0_40px_rgba(0,0,0,0.02)]">
+                
+                {/* Desktop Vertical Wave Divider */}
+                <div className="hidden md:block absolute top-0 -left-[140px] w-[141px] h-full text-white pointer-events-none drop-shadow-[-10px_0_15px_rgba(0,0,0,0.03)] focus:border-0 outline-none">
+                    <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full" fill="currentColor">
+                        <path d="M 100,0 C 100,30 0,30 0,50 C 0,70 100,70 100,100 Z" />
+                    </svg>
+                </div>
+
+                {/* Mobile Horizontal Wave Divider */}
+                <div className="md:hidden absolute -top-[50px] left-0 w-full h-[51px] text-white pointer-events-none drop-shadow-[0_-10px_15px_rgba(0,0,0,0.03)] focus:border-0 outline-none">
+                    <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full" fill="currentColor">
+                        <path d="M 0,100 C 30,100 30,0 50,0 C 70,0 70,100 100,100 Z" />
+                    </svg>
+                </div>
                 <motion.div 
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
