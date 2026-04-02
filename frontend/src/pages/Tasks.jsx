@@ -318,26 +318,33 @@ const Tasks = ({ filter = "all" }) => {
 
     const EmptyState = () => (
         <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center justify-center py-16 sm:py-32 text-center"
+            className="flex flex-col items-center justify-center py-20 sm:py-40 text-center"
         >
-            <div className="relative mb-6 sm:mb-8">
-                <div className="absolute inset-0 bg-primary-500/10 blur-[40px] sm:blur-[60px] rounded-full" />
-                <div className="relative w-20 h-20 sm:w-24 sm:h-24 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-xl flex items-center justify-center text-primary-500 border border-white/20 dark:border-slate-800/50">
-                    <ListTodo size={40} className="sm:size-12" strokeWidth={1.5} />
-                </div>
-                <motion.div
-                    animate={{ y: [0, -8, 0] }}
-                    transition={{ repeat: Infinity, duration: 3 }}
-                    className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 w-8 h-8 sm:w-10 sm:h-10 bg-amber-100 text-amber-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg border border-amber-200"
-                >
-                    <Plus size={16} className="sm:size-5" strokeWidth={3} />
-                </motion.div>
+            <div className="relative mb-8 text-slate-200 dark:text-slate-800">
+                <svg width="240" height="160" viewBox="0 0 240 160" fill="none" xmlns="http://www.w3.org/2000/svg" className="opacity-80">
+                    {/* Background Cards */}
+                    <rect x="40" y="40" width="80" height="100" rx="4" stroke="currentColor" strokeWidth="2" strokeDasharray="4 4"/>
+                    <rect x="120" y="40" width="80" height="100" rx="4" stroke="currentColor" strokeWidth="2" strokeDasharray="4 4"/>
+                    
+                    {/* Main Central Card */}
+                    <rect x="70" y="20" width="100" height="120" rx="8" fill="white" className="dark:fill-slate-900" stroke="currentColor" strokeWidth="2"/>
+                    
+                    {/* Person Icon in Circle */}
+                    <circle cx="120" cy="55" r="15" stroke="currentColor" strokeWidth="2"/>
+                    <path d="M108 80C108 73.3726 113.373 68 120 68V68C126.627 68 132 73.3726 132 80" stroke="currentColor" strokeWidth="2"/>
+                    
+                    {/* Task Lines */}
+                    <circle cx="95" cy="100" r="3" stroke="currentColor" strokeWidth="2"/>
+                    <rect x="105" y="99" width="40" height="2" rx="1" fill="currentColor" fillOpacity="0.3"/>
+                    
+                    <circle cx="95" cy="115" r="3" stroke="currentColor" strokeWidth="2"/>
+                    <rect x="105" y="114" width="40" height="2" rx="1" fill="currentColor" fillOpacity="0.3"/>
+                </svg>
             </div>
-            <h3 className="text-xl sm:text-2xl font-black text-slate-800 dark:text-white uppercase tracking-tight">Focus on what matters</h3>
-            <p className="text-xs sm:text-lg text-slate-500 dark:text-slate-400 mt-2 sm:mt-3 max-w-xs sm:max-w-sm mx-auto font-medium leading-relaxed px-4">
-                Your workspace is currently clear. Reach out to a mentor and start your journey.
+            <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 max-w-[280px] sm:max-w-md mx-auto font-medium leading-relaxed px-4">
+                Tasks assigned to you in To Do or Planner show up here
             </p>
         </motion.div>
     );

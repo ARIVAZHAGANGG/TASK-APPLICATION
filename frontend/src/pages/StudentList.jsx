@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Users, Search, Filter, Shield, MoreVertical, Loader2, User as UserIcon, Send, Mail, MapPin, Award, BookOpen, ListTodo, X, Save, RefreshCw, MessageSquare } from "lucide-react";
+import { Users, Search, Filter, Shield, MoreVertical, Loader2, User as UserIcon, Send, Mail, MapPin, Award, BookOpen, ListTodo, X, Save, RefreshCw, MessageSquare, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { toast } from "sonner";
@@ -16,6 +16,7 @@ const StudentList = () => {
     // Modal state
     const [editingStudent, setEditingStudent] = useState(null);
     const [departmentInput, setDepartmentInput] = useState("");
+    const [yearInput, setYearInput] = useState("");
     const [submitting, setSubmitting] = useState(false);
 
     const navigate = useNavigate();
@@ -42,22 +43,29 @@ const StudentList = () => {
     const openEditModal = (student) => {
         setEditingStudent(student);
         setDepartmentInput(student.department || "");
+        setYearInput(student.year || "");
     };
 
-    const handleUpdateDepartment = async (e) => {
+    const handleUpdateProfile = async (e) => {
         if (e) e.preventDefault();
         setSubmitting(true);
         try {
-            await api.put(`/admin/students/${editingStudent._id || editingStudent.id}/department`, { department: departmentInput });
-            toast.success("Student department updated successfully");
-            setEditingStudent(null);
+            const res = await api.put(`/admin/students/${editingStudent._id || editingStudent.id}/department`, { 
+                department: departmentInput,
+                year: yearInput
+            });
             
-            // Refresh students
-            const res = await api.get("/admin/students");
-            setStudents(res.data);
+            if (res.data) {
+                toast.success("Student profile saved successfully!");
+                setEditingStudent(null);
+                
+                // Refresh students list
+                const studentsRes = await api.get("/admin/students");
+                setStudents(studentsRes.data);
+            }
         } catch (error) {
-            console.error("Update Department Error Details:", error.response?.data || error.message);
-            toast.error(error.response?.data?.message || "Failed to update department");
+            console.error("Save Error:", error.response?.data || error.message);
+            toast.error(error.response?.data?.message || "Failed to save profile");
         } finally {
             setSubmitting(false);
         }
@@ -70,7 +78,7 @@ const StudentList = () => {
     );
 
     return (
-        <div className="max-w-7xl mx-auto p-4 md:p-8 pb-24 md:pb-8">
+        <div className="max-w-7xl mx-auto p-4 md:p-8 pb-24 md:pb-8 font-['Nunito']">
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6 mb-6 sm:mb-10">
                 <div>
                     <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight uppercase italic underline decoration-primary-500/30">Registry</h1>
@@ -126,14 +134,30 @@ const StudentList = () => {
                                 )}
                             </div>
 
-                            <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
+                            <div className="space-y-2.5 sm:space-y-3 mb-6 sm:mb-8">
                                 <div className="flex items-center gap-3 text-slate-500">
                                     <Mail size={12} className="text-slate-300 sm:size-3.5" />
                                     <span className="text-[11px] sm:text-xs font-bold truncate">{student.email}</span>
                                 </div>
                                 <div className="flex items-center gap-3 text-slate-500">
                                     <BookOpen size={12} className="text-slate-300 sm:size-3.5" />
-                                    <span className="text-[11px] sm:text-xs font-bold truncate">Course: {student.department || 'Computer Science'}</span>
+                                    <span className="text-[11px] sm:text-xs font-bold truncate">
+                                        Course: {(() => {
+                                            const dept = student.department?.toLowerCase();
+                                            if (dept === 'aids' || dept === 'ad') return 'AI & DS';
+                                            if (dept === 'cs' || dept === 'cse') return 'CSE';
+                                            if (dept === 'ece') return 'ECE';
+                                            if (dept === 'eee') return 'EEE';
+                                            if (dept === 'it') return 'Information Technology';
+                                            return student.department || 'Not Assigned';
+                                        })()}
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-3 text-slate-500">
+                                    <Calendar size={12} className="text-slate-300 sm:size-3.5" />
+                                    <span className="text-[11px] sm:text-xs font-bold">
+                                        Year: <span className="text-slate-600 dark:text-slate-300 font-bold uppercase">{student.year || 'Not Set'}</span>
+                                    </span>
                                 </div>
                                 <div className="flex items-center gap-3 text-slate-500">
                                     <Award size={12} className="text-emerald-500 sm:size-3.5" />
@@ -182,7 +206,7 @@ const StudentList = () => {
                 )}
             </div>
 
-            {/* Edit Department Modal */}
+            {/* Edit Department/Year Modal */}
             <AnimatePresence>
                 {editingStudent && (
                     <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4">
@@ -214,7 +238,7 @@ const StudentList = () => {
                                 </button>
                             </div>
 
-                            <form onSubmit={handleUpdateDepartment}>
+                            <form onSubmit={handleUpdateProfile}>
                                 <div className="space-y-5 sm:space-y-6">
                                     <div>
                                         <label className="block text-[9px] sm:text-[10px] font-black uppercase text-slate-400 tracking-widest mb-2 px-1">Department / Course Name</label>
@@ -223,10 +247,26 @@ const StudentList = () => {
                                             required
                                             value={departmentInput}
                                             onChange={e => setDepartmentInput(e.target.value)}
-                                            className="saas-input h-12 sm:h-14 font-medium text-sm"
+                                            className="saas-input h-12 sm:h-14 font-bold text-sm"
                                             placeholder="e.g. Computer Science..."
                                             disabled={submitting}
                                         />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-[9px] sm:text-[10px] font-black uppercase text-slate-400 tracking-widest mb-2 px-1">Current Year</label>
+                                        <select 
+                                            value={yearInput}
+                                            onChange={e => setYearInput(e.target.value)}
+                                            className="saas-input h-12 sm:h-14 font-bold text-sm appearance-none bg-slate-50 dark:bg-slate-800"
+                                            disabled={submitting}
+                                        >
+                                            <option value="">Select Year</option>
+                                            <option value="1st">1st Year</option>
+                                            <option value="2nd">2nd Year</option>
+                                            <option value="3rd">3rd Year</option>
+                                            <option value="4th">4th Year</option>
+                                        </select>
                                     </div>
                                 </div>
 

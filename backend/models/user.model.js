@@ -33,6 +33,11 @@ const userSchema = new mongoose.Schema(
       trim: true,
       default: null,
     },
+    year: {
+      type: String,
+      enum: ["1st", "2nd", "3rd", "4th"],
+      default: null,
+    },
     // Gamification & Analytics
     streak: {
       type: Number,

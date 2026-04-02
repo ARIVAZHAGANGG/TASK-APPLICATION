@@ -155,21 +155,28 @@ exports.getStudents = async (req, res) => {
 exports.updateStudentDepartment = async (req, res) => {
   try {
     const { id } = req.params;
-    const { department } = req.body;
+    const { department, year } = req.body;
 
     if (req.user.role !== 'admin' && req.user.role !== 'mentor') {
       return res.status(403).json({ message: "Not authorized to modify students" });
     }
 
-    const student = await User.findByIdAndUpdate(
-      id, 
-      { $set: { department } }, 
-      { new: true, runValidators: false }
-    );
+    // Using findByIdAndUpdate for more standard Mongoose casting and reliability
+    const updatedStudent = await User.findByIdAndUpdate(
+      id,
+      { $set: { department, year } },
+      { new: true, runValidators: true }
+    ).select("department year name");
     
-    if (!student) return res.status(404).json({ message: "Student not found" });
+    if (!updatedStudent) {
+      return res.status(404).json({ message: "Student not found" });
+    }
 
-    res.json({ message: "Student department updated successfully", department: student.department });
+    res.json({ 
+      message: "Student profile updated successfully", 
+      department: updatedStudent.department,
+      year: updatedStudent.year 
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

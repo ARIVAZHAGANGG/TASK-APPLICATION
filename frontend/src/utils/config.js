@@ -13,7 +13,7 @@ const getEnv = (key, defaultValue) => {
 };
 
 // Clean the API URL
-const API = process.env.REACT_APP_API_URL || "https://task-application-isg6.onrender.com";
+const API = process.env.REACT_APP_API_URL || "http://localhost:5005";
 
 // Extract the base domain/host for Socket.io (no /api prefix)
 const getBaseUrl = (url) => {
