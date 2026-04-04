@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Search, Bell, CheckCircle2, AlertCircle, Clock, LogOut, Plus, Trash2, Check, Flame, BarChart3, ListTodo, User, ListPlus, Menu } from "lucide-react";
+import { Search, Bell, CheckCircle2, AlertCircle, Clock, LogOut, Plus, Trash2, Check, Flame, BarChart3, ListTodo, User, ListPlus, Menu, Keyboard } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -41,7 +41,7 @@ const getPageTitle = (pathname) => {
     return segment ? segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, " ") : "Dashboard";
 };
 
-const Navbar = ({ onNewTask, onNewBulkTask, onMenuToggle }) => {
+const Navbar = ({ onNewTask, onNewBulkTask, onMenuToggle, onKeyboardToggle, isKeyboardOpen }) => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
@@ -185,6 +185,17 @@ const Navbar = ({ onNewTask, onNewBulkTask, onMenuToggle }) => {
             {/* RIGHT: Tools & Action */}
             <div className="flex items-center gap-2 sm:gap-4 shrink-0">
                 <div className="flex items-center gap-1 sm:gap-2 pr-2 border-r border-slate-200 dark:border-slate-700">
+                    <button
+                        onClick={onKeyboardToggle}
+                        className={cn(
+                            "p-2.5 rounded-xl transition-all relative hidden sm:block",
+                            isKeyboardOpen ? "bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400" : "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100"
+                        )}
+                        title="Virtual Keyboard"
+                    >
+                        <Keyboard size={20} />
+                    </button>
+
                     <ThemeSwitcher />
 
                     <div className="relative" ref={notificationRef}>

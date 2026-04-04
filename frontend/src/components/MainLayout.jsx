@@ -13,6 +13,7 @@ import MagicSearch from "./ui/MagicSearch";
 import TaskAssistant from "./support/TaskAssistant";
 import SupportChat from "./support/SupportChat";
 import PremiumBackground from "./ui/PremiumBackground";
+import HolographicKeyboard from "./ui/HolographicKeyboard";
 
 const MainLayout = () => {
     const { user, loading } = useAuth();
@@ -20,6 +21,7 @@ const MainLayout = () => {
     const [initialBulkMode, setInitialBulkMode] = useState(false);
     const [isMagicSearchOpen, setIsMagicSearchOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
 
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -100,6 +102,8 @@ const MainLayout = () => {
                     onNewTask={() => { setInitialBulkMode(false); setIsTaskModalOpen(true); }} 
                     onNewBulkTask={() => { setInitialBulkMode(true); setIsTaskModalOpen(true); }}
                     onMenuToggle={() => setIsMobileMenuOpen(true)}
+                    onKeyboardToggle={() => setIsKeyboardOpen(prev => !prev)}
+                    isKeyboardOpen={isKeyboardOpen}
                 />
                 <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10 custom-scrollbar overscroll-contain">
                     <motion.div
@@ -135,6 +139,11 @@ const MainLayout = () => {
             />
 
             <TaskAssistant />
+
+            <HolographicKeyboard 
+                isOpen={isKeyboardOpen} 
+                onClose={() => setIsKeyboardOpen(false)} 
+            />
 
             {/* VoiceAssistant removed as requested - mic restricted to specific assignment areas for Admin */}
         </div>
