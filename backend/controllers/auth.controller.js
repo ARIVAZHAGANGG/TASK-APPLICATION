@@ -36,7 +36,7 @@ exports.register = async (req, res) => {
     const user = await User.create(userData);
 
     const token = jwt.sign(
-      { id: user._id, role: user.role },
+      { id: user._id, role: user.role, name: user.name },
       process.env.JWT_SECRET,
       { expiresIn: rememberMe ? "30d" : "1d" }
     );
@@ -101,7 +101,7 @@ exports.login = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user._id, role: user.role },
+      { id: user._id, role: user.role, name: user.name },
       process.env.JWT_SECRET,
       { expiresIn: rememberMe ? "30d" : "1d" }
     );
@@ -258,7 +258,7 @@ exports.googleLogin = async (req, res) => {
     }
 
     const jwtToken = jwt.sign(
-      { id: user._id, role: user.role },
+      { id: user._id, role: user.role, name: user.name },
       process.env.JWT_SECRET,
       { expiresIn: rememberMe ? "30d" : "1d" }
     );

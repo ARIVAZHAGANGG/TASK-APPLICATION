@@ -631,11 +631,19 @@ exports.updateTask = async (req, res) => {
 
       // Create Notification for the assigner (Admin/Mentor)
       if (task.createdBy.toString() !== req.user.id) {
+          // Robust name fetching (fallback for old tokens)
+          let currentUserName = req.user.name;
+          if (!currentUserName) {
+              const User = require('../models/user.model');
+              const currentUser = await User.findById(req.user.id).select('name');
+              currentUserName = currentUser?.name || 'A student';
+          }
+
           await notificationController.createNotification(
               task.createdBy,
               'task_completed',
               'Objective Accomplished! 🎉',
-              `${req.user.name} has finished the task: "${task.title}"`,
+              `${currentUserName} has finished the task: "${task.title}"`,
               '/board'
           );
       }

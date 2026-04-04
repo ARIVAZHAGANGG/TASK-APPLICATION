@@ -7,7 +7,7 @@ const User = require("../models/user.model");
 exports.submitTask = async (req, res) => {
   try {
     const { taskId } = req.params;
-    const studentId = req.user._id;
+    const studentId = req.user.id || req.user._id;
     const { uploadedFileLink, answer } = req.body;
 
     // Verify the task exists
@@ -41,7 +41,7 @@ exports.submitTask = async (req, res) => {
             userId: notificationTarget,
             type: 'task_comment', // Reusing task_comment for now or we can add 'task_submitted' if exists
             title: 'Task Submission received 📥',
-            message: `${student?.name || 'A student'} submitted work for: "${task.title}"`,
+            message: `${student?.name || req.user.name || 'A student'} submitted work for: "${task.title}"`,
             link: `/board`,
             taskId: task._id,
             metadata: {
@@ -77,7 +77,7 @@ exports.getSubmissionsByTask = async (req, res) => {
 // ─── Get all submissions by the current student ───────────────────────────────
 exports.getMySubmissions = async (req, res) => {
   try {
-    const studentId = req.user._id;
+    const studentId = req.user.id || req.user._id;
 
     const submissions = await Submission.find({ studentId })
       .populate("taskId", "title description status priority deadlineDate")
@@ -95,7 +95,7 @@ exports.getMySubmissions = async (req, res) => {
 exports.reviewSubmission = async (req, res) => {
   try {
     const { submissionId } = req.params;
-    const reviewerId = req.user._id;
+    const reviewerId = req.user.id || req.user._id;
     const { status, reviewNote } = req.body;
 
     const allowed = ["approved", "rejected", "pending"];
