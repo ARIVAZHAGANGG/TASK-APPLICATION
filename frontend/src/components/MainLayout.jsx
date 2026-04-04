@@ -10,7 +10,6 @@ import { toast } from "sonner";
 import { Plus } from "lucide-react";
 import TaskModal from "./ui/TaskModal";
 import MagicSearch from "./ui/MagicSearch";
-import TaskAssistant from "./support/TaskAssistant";
 import SupportChat from "./support/SupportChat";
 import PremiumBackground from "./ui/PremiumBackground";
 import HolographicKeyboard from "./ui/HolographicKeyboard";
@@ -137,8 +136,6 @@ const MainLayout = () => {
                 onClose={() => setIsMagicSearchOpen(false)}
                 onNewBulkTask={() => { setInitialBulkMode(true); setIsTaskModalOpen(true); }}
             />
-
-            <TaskAssistant />
 
             <HolographicKeyboard 
                 isOpen={isKeyboardOpen} 
