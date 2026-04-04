@@ -11,12 +11,15 @@ import TaskCard from "../components/ui/TaskCard";
 import TaskModal from "../components/ui/TaskModal";
 import CalendarPopup from "../components/dashboard/CalendarPopup";
 import { cn } from "../utils/cn";
+import AnalyticsCharts from "../components/dashboard/AnalyticsCharts";
+import { getGraphData } from "../services/taskService";
 
 const Dashboard = () => {
     const [currentTime, setCurrentTime] = useState(new Date());
     const [isCalendarOpen, setIsCalendarOpen] = useState(false);
     const [calendarAnchor, setCalendarAnchor] = useState(null);
     const [stats, setStats] = useState(null);
+    const [graphData, setGraphData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [assignedTasks, setAssignedTasks] = useState([]);
     const { user } = useAuth();
@@ -32,11 +35,13 @@ const Dashboard = () => {
 
     const fetchDashboardData = useCallback(async () => {
         try {
-            const [statsRes, tasksRes] = await Promise.all([
+            const [statsRes, tasksRes, graphRes] = await Promise.all([
                 api.get("/tasks/stats"),
-                api.get("/tasks")
+                api.get("/tasks"),
+                getGraphData()
             ]);
             setStats(statsRes.data);
+            setGraphData(graphRes.data);
 
             // Filter tasks assigned to me
             const allTasks = tasksRes.data.data || tasksRes.data;
@@ -215,6 +220,27 @@ const Dashboard = () => {
                     )}
                 </div>
             </div>
+
+            {/* Analytics Section */}
+            {graphData && (
+                <div className="mb-12">
+                    <div className="flex items-center gap-3 sm:gap-4 mb-6">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-500 rounded-xl sm:rounded-2xl flex items-center justify-center text-white shadow-lg shadow-purple-100">
+                            <TrendingUp size={20} className="sm:hidden" />
+                            <TrendingUp size={24} className="hidden sm:block" />
+                        </div>
+                        <div>
+                            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">Productivity <span className="text-purple-600 dark:text-purple-400 font-medium">Trends</span></h2>
+                            <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 font-medium mt-0.5">Real-time data from your recent operations.</p>
+                        </div>
+                    </div>
+                    <AnalyticsCharts 
+                        weeklyData={graphData.monthlyStats?.map(m => ({ name: m.month, tasks: m.created }))}
+                        priorityData={graphData.priorityDistribution}
+                        trendData={graphData.monthlyStats?.map(m => ({ day: m.month, completed: m.completed }))}
+                    />
+                </div>
+            )}
 
             {/* Assigned Tasks Section for Mentors and Students */}
             {(user?.role === 'mentor' || user?.role === 'student') && (

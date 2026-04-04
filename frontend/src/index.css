@@ -30,42 +30,34 @@
   --danger: #ef4444;
   --info: #0ea5e9;
 
-  /* Clean Light Theme */
+  /* Premium Mesh Gradient System */
+  --bg-mesh-1: #e0e7ff; /* Indigo 100 */
+  --bg-mesh-2: #f0f9ff; /* Sky 50 */
+  --bg-mesh-3: #fae8ff; /* Fuchsia 50 */
+  --bg-mesh-4: #f8fafc; /* Slate 50 */
   --bg-primary: #f8faff;
-  --bg-secondary: rgba(255, 255, 255, 0.85);
-  --bg-tertiary: rgba(255, 255, 255, 0.6);
-  --text-primary: #0F172A;
-  --text-secondary: #334155;
-  --text-tertiary: #64748B;
-  --border-color: rgba(226, 232, 240, 0.8);
-  --card-shadow: 0 10px 30px -5px rgba(99, 102, 241, 0.15), 0 8px 10px -6px rgba(99, 102, 241, 0.05);
-  --card-shadow-hover: 0 25px 40px -5px rgba(168, 85, 247, 0.2), 0 12px 15px -8px rgba(168, 85, 247, 0.1);
-
-  /* Mesh Gradient Tokens - Subtle */
-  --mesh-1: #e0e7ff;
-  --mesh-2: #f0f9ff;
-  --mesh-3: #fae8ff;
-  --mesh-4: #fef2f2;
+  --bg-secondary: rgba(255, 255, 255, 0.7);
+  --bg-tertiary: rgba(255, 255, 255, 0.4);
 }
 
 [data-theme="dark"],
 .dark {
-  /* Dark Theme - Colorful Glows */
-  --bg-primary: #0a0c14;
-  --bg-secondary: rgba(15, 23, 42, 0.85);
-  --bg-tertiary: rgba(30, 41, 59, 0.6);
+  /* Dark Theme Premium Glows */
+  --bg-mesh-1: #1e1b4b; /* Indigo 950 */
+  --bg-mesh-2: #0c4a6e; /* Sky 950 */
+  --bg-mesh-3: #4c1d95; /* Purple 950 */
+  --bg-mesh-4: #0f172a; /* Slate 950 */
+  --bg-primary: #0a0c10;
+  --bg-secondary: rgba(15, 23, 42, 0.7);
+  --bg-tertiary: rgba(30, 41, 59, 0.4);
   --text-primary: #F8FAFC;
   --text-secondary: #cbd5e1;
   --text-tertiary: #94A3B8;
-  --border-color: rgba(51, 65, 85, 0.8);
-  --mesh-1: hsla(280, 100%, 70%, 0.35);
-  --mesh-2: hsla(240, 100%, 70%, 0.35);
-  --mesh-3: hsla(200, 100%, 70%, 0.35);
-  --mesh-4: hsla(320, 100%, 70%, 0.35);
+  --border-color: rgba(51, 65, 85, 0.5);
   --hover-bg: rgba(30, 41, 59, 0.8);
-  --card-bg: rgba(15, 23, 42, 0.7);
-  --sidebar-bg: rgba(10, 12, 20, 0.9);
-  --navbar-bg: rgba(10, 12, 20, 0.8);
+  --card-bg: rgba(15, 23, 42, 0.6);
+  --sidebar-bg: rgba(10, 12, 16, 0.8);
+  --navbar-bg: rgba(10, 12, 16, 0.7);
 }
 
 [data-theme="amoled"],
@@ -94,6 +86,12 @@
     @apply antialiased transition-colors duration-300 text-[16px];
     font-family: 'Nunito', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     background-color: var(--bg-primary);
+    background-image: 
+      radial-gradient(at 0% 0%, var(--bg-mesh-1) 0, transparent 50%), 
+      radial-gradient(at 100% 0%, var(--bg-mesh-2) 0, transparent 50%), 
+      radial-gradient(at 100% 100%, var(--bg-mesh-3) 0, transparent 50%), 
+      radial-gradient(at 0% 100%, var(--bg-mesh-4) 0, transparent 50%);
+    background-attachment: fixed;
     color: var(--text-primary);
     min-height: 100vh;
     letter-spacing: 0.015em;
@@ -124,11 +122,15 @@
   }
 
   .saas-card {
-    @apply bg-white dark:bg-slate-900 rounded-[40px] border border-slate-200/60 dark:border-slate-800/60 shadow-xl shadow-blue-500/5 transition-all duration-500;
+    @apply bg-white/80 dark:bg-slate-900/40 backdrop-blur-md border border-white/40 dark:border-slate-800/50 rounded-[32px] transition-all duration-500;
   }
 
   .saas-card:hover {
-    @apply saas-shadow -translate-y-1;
+    @apply shadow-2xl bg-white/90 dark:hover:bg-slate-900/60 -translate-y-1;
+  }
+
+  .chart-glass {
+    @apply relative overflow-hidden rounded-[24px] bg-white/40 dark:bg-slate-950/20 backdrop-blur-sm border border-white/20 dark:border-slate-800/30 shadow-inner;
   }
 
   .btn-primary {

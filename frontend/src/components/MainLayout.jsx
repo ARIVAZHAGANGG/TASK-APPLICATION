@@ -12,6 +12,7 @@ import TaskModal from "./ui/TaskModal";
 import MagicSearch from "./ui/MagicSearch";
 import TaskAssistant from "./support/TaskAssistant";
 import SupportChat from "./support/SupportChat";
+import PremiumBackground from "./ui/PremiumBackground";
 
 const MainLayout = () => {
     const { user, loading } = useAuth();
@@ -62,7 +63,8 @@ const MainLayout = () => {
     };
 
     return (
-        <div className="flex h-screen bg-[var(--bg-primary)] overflow-hidden relative">
+        <div className="flex h-screen bg-transparent overflow-hidden relative">
+            <PremiumBackground />
             
             {/* Mobile Sidebar Overlay */}
             <AnimatePresence>
