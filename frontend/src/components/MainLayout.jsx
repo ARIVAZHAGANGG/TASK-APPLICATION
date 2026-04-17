@@ -13,6 +13,7 @@ import MagicSearch from "./ui/MagicSearch";
 import SupportChat from "./support/SupportChat";
 import PremiumBackground from "./ui/PremiumBackground";
 import HolographicKeyboard from "./ui/HolographicKeyboard";
+import ChatBot from "./ChatBot";
 
 const MainLayout = () => {
     const { user, loading } = useAuth();
@@ -141,6 +142,8 @@ const MainLayout = () => {
                 isOpen={isKeyboardOpen} 
                 onClose={() => setIsKeyboardOpen(false)} 
             />
+
+            <ChatBot />
 
             {/* VoiceAssistant removed as requested - mic restricted to specific assignment areas for Admin */}
         </div>
